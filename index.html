@@ -48,38 +48,28 @@
 
     <div id="tableau-des-taches">
     
-        <ul id="exercer" class="liste-taches">
-        
-            <li>natation</li>
-            <li>danse</li>
-        
-        </ul>
-        
-        <ul id="etudier" class="liste-taches">
-        
-            <li>reseautique</li>
-        
-        </ul>
-    
-        
-        <ul id="creer" class="liste-taches">
-        
-            <li>formation</li>
-            <li>page web</li>
-        
-        </ul>
-        
-        <ul id="construire" class="liste-taches">
-        
-            <li>menage</li>
-            <li>reno</li>
-            <li>produit</li>
-        
-        </ul>
 
     </div>
 
     <script type="text/javascript">
+    
+    var tachesParDefaut = {"exercer":["natation","danse"],"etudier":["internet","herboristerie","survie"],"creer":["formation","page web"],"construire":["menage","reno","produit"]};
+    
+    var tachesEnregistrees = JSON.parse(localStorage.getItem("taches", exporter()));
+
+    var vueDuTableau = document.querySelector('#tableau-des-taches');
+    
+    var tableauTaches = tachesEnregistrees;
+    for(nomListe in tableauTaches)
+    {
+        var listeTaches = tableauTaches[nomListe];
+        var vueDeListe = '';
+        for(numeroTache in listeTaches)
+        {
+            vueDeListe += '<li>'+listeTaches[numeroTache]+'</li>'
+        }
+        vueDuTableau.innerHTML += '<ul id="'+nomListe+'" class="liste-taches">'+vueDeListe+'</ul>'
+    }
     
     var options = {
         direction: 'vertical',             // Y axis is considered when determining where an element would be dropped
@@ -93,17 +83,19 @@
     
     dragula([document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')], options);
     
-    function exporterJson()
+    function exporter()
     {
         var donnees = {};
         donnees["exercer"] = lireListe("exercer");
         donnees["etudier"] = lireListe("etudier");
         donnees["creer"] = lireListe("creer");
         donnees["construire"] = lireListe("construire");
-        return JSON.stringify(donnees);
+        return donnees;
     }
     function lireListe(liste)
     {
+        if(!document.getElementById(liste)) return;
+    
         var donneesListe = [];
         lesTachesExercer = document.getElementById(liste).getElementsByTagName("li");
         for(var position = 0; position < lesTachesExercer.length; position++)
@@ -113,8 +105,7 @@
         }
         return donneesListe;
     }
-    //alert(exporterJson());
-    localStorage.setItem("taches", exporterJson());
+    localStorage.setItem("taches", JSON.stringify(exporter()));
     
     </script>
     
