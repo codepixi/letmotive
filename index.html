@@ -1,0 +1,122 @@
+<html>
+<head>
+
+<style>
+
+    *
+    {
+        padding:0;
+        margin:0;
+    }
+
+    #tableau-des-taches
+    {
+        clear:both;
+    }
+    
+    #tableau-des-taches .liste-taches
+    {
+    
+        list-style-type:none;
+        background-color:orange;
+        float:left;
+        width:200px;
+        margin:10px;
+        padding:10px 10px 5px 10px;
+    
+    }
+    #tableau-des-taches .liste-taches *
+    {
+    
+        margin-bottom:5px;
+        background-color:white;
+        padding:4px;
+        border-radius:10px;
+        height:30px;
+        text-align:center;
+        line-height:30px;
+        font-weight:bold;
+        color:#333333;
+        cursor:hand;
+    
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="lib/dragula.css"></link>
+<script type="text/javascript" src="lib/dragula.js"></script>
+</head>
+<body>
+
+    <div id="tableau-des-taches">
+    
+        <ul id="exercer" class="liste-taches">
+        
+            <li>natation</li>
+            <li>danse</li>
+        
+        </ul>
+        
+        <ul id="etudier" class="liste-taches">
+        
+            <li>reseautique</li>
+        
+        </ul>
+    
+        
+        <ul id="creer" class="liste-taches">
+        
+            <li>formation</li>
+            <li>page web</li>
+        
+        </ul>
+        
+        <ul id="construire" class="liste-taches">
+        
+            <li>menage</li>
+            <li>reno</li>
+            <li>produit</li>
+        
+        </ul>
+
+    </div>
+
+    <script type="text/javascript">
+    
+    var options = {
+        direction: 'vertical',             // Y axis is considered when determining where an element would be dropped
+        copy: false,                       // elements are moved by default, not copied
+        copySortSource: false,             // elements in copy-source containers can be reordered
+        revertOnSpill: false,              // spilling will put the element back where it was dragged from, if this is true
+        removeOnSpill: false,              // spilling will `.remove` the element, if this is true
+        mirrorContainer: document.body,    // set the element that gets mirror elements appended
+        ignoreInputTextSelection: true     // allows users to select input text, see details below
+    };
+    
+    dragula([document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')], options);
+    
+    function exporterJson()
+    {
+        var donnees = {};
+        donnees["exercer"] = lireListe("exercer");
+        donnees["etudier"] = lireListe("etudier");
+        donnees["creer"] = lireListe("creer");
+        donnees["construire"] = lireListe("construire");
+        return JSON.stringify(donnees);
+    }
+    function lireListe(liste)
+    {
+        var donneesListe = [];
+        lesTachesExercer = document.getElementById(liste).getElementsByTagName("li");
+        for(var position = 0; position < lesTachesExercer.length; position++)
+        {
+            var tache = lesTachesExercer[position];
+            donneesListe[donneesListe.length] = tache.innerHTML;
+        }
+        return donneesListe;
+    }
+    //alert(exporterJson());
+    localStorage.setItem("taches", exporterJson());
+    
+    </script>
+    
+</body>
+</html>
