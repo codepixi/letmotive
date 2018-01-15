@@ -8,6 +8,24 @@
         padding:0;
         margin:0;
     }
+    
+    li
+    {
+        list-style-type:none;
+        background-color:red;
+        width:200px;
+        margin:10px;
+        padding:10px 10px 5px 10px;
+        margin-bottom:5px;
+        padding:4px;
+        border-radius:10px;
+        height:30px;
+        text-align:center;
+        line-height:30px;
+        font-weight:bold;
+        color:#333333;
+        cursor:hand;    
+    }
 
     #tableau-des-taches
     {
@@ -20,7 +38,7 @@
         list-style-type:none;
         background-color:orange;
         float:left;
-        width:200px;
+        width:230px;
         margin:10px;
         padding:10px 10px 5px 10px;
     
@@ -28,8 +46,8 @@
     #tableau-des-taches .liste-taches *
     {
     
-        margin-bottom:5px;
         background-color:white;
+        margin-bottom:5px;
         padding:4px;
         border-radius:10px;
         height:30px;
@@ -137,13 +155,20 @@
         removeOnSpill: false,              // spilling will `.remove` the element, if this is true
         mirrorContainer: document.body,    // set the element that gets mirror elements appended
         ignoreInputTextSelection: true,     // allows users to select input text, see details below
-        accepts: function (el, target, source, sibling) 
+        accepts: function (obj, target, source, sibling) 
         {
-            return sibling === null || el.className.indexOf("action") == -1;
+            return sibling === null || obj.className.indexOf("action") == -1;
         }
     };
     
-    dragula([document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')], options);
+    function atterrir(obj, to, from)
+    {
+        var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
+        localStorage.setItem("taches", JSON.stringify(exporter())); // TODO optimiser        
+    }
+    
+    dragula([document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')], options).on("drop", atterrir);
+    
     
     function exporter()
     {
@@ -167,7 +192,7 @@
         }
         return donneesListe;
     }
-    localStorage.setItem("taches", JSON.stringify(exporter()));
+    //localStorage.setItem("taches", JSON.stringify(exporter()));
     
     </script>
     
