@@ -107,7 +107,7 @@
     var vueDuTableau = document.querySelector('#tableau-des-taches');
     
     var tableauTaches = tachesParDefaut;
-    if(localStorage.getItem("taches").length != 0)
+    if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
         tableauTaches = tachesEnregistrees;
 
         
