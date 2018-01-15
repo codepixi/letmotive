@@ -37,8 +37,22 @@
         line-height:30px;
         font-weight:bold;
         color:#333333;
-        cursor:hand;
-    
+        cursor:hand;    
+    }
+    #formulaire-nouvelle-tache 
+    {
+        background-color:#beedbb;
+        border-radius:20px;
+        padding:5px;
+        border:solid 3px black;
+    }
+    #formulaire-nouvelle-tache form div
+    {
+        padding:5px;
+    }
+    #formulaire-nouvelle-tache form div label
+    {
+        display:block;
     }
 </style>
 <link rel="stylesheet" type="text/css" href="lib/dragula.css"></link>
@@ -51,24 +65,68 @@
 
     </div>
 
+    <div id="formulaire-nouvelle-tache" style="display:none;"><form method="post" onsubmit="return enregistrerTache()">
+    
+    <div>
+        <label for="nouvelle-tache-nom">Nom de la tache</label>
+        <input type="text" name="nom" id="nouvelle-tache-nom"/>
+    </div>
+        
+    </form></div>
+    
     <script type="text/javascript">
+    
+    var listeEnEdition = "";
+    
+    function ajouterTache(liste)
+    {
+        var boite = document.querySelector("#formulaire-nouvelle-tache");
+        boite.style.display = "block";
+        boite.style.position = "absolute";
+        boite.style.x = event.clientX;
+        boite.style.y = event.clientY;
+        listeEnEdition = liste;
+    }
+    function enregistrerTache()
+    {
+        var boite = document.querySelector("#formulaire-nouvelle-tache");
+        boite.style.display = "none";
+        lesTaches = JSON.parse(localStorage.getItem("taches"));
+        lesTaches[listeEnEdition.id][lesTaches[listeEnEdition.id].length] = document.querySelector("#nouvelle-tache-nom").value;
+        //alert(lesTaches[listeEnEdition.id]);
+        listeEnEdition.innerHTML = ecrireListe(lesTaches[listeEnEdition.id]);
+        localStorage.setItem("taches", JSON.stringify(lesTaches));
+        document.querySelector("#nouvelle-tache-nom").value = "";
+        return false;
+    }
     
     var tachesParDefaut = {"exercer":["natation","danse"],"etudier":["internet","herboristerie","survie"],"creer":["formation","page web"],"construire":["menage","reno","produit"]};
     
-    var tachesEnregistrees = JSON.parse(localStorage.getItem("taches", exporter()));
+    var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
 
     var vueDuTableau = document.querySelector('#tableau-des-taches');
     
-    var tableauTaches = tachesEnregistrees;
-    for(nomListe in tableauTaches)
+    var tableauTaches = tachesParDefaut;
+    if(localStorage.getItem("taches").length != 0)
+        tableauTaches = tachesEnregistrees;
+
+        
+    function ecrireListe(listeTaches)
     {
-        var listeTaches = tableauTaches[nomListe];
         var vueDeListe = '';
         for(numeroTache in listeTaches)
         {
             vueDeListe += '<li>'+listeTaches[numeroTache]+'</li>'
         }
-        vueDuTableau.innerHTML += '<ul id="'+nomListe+'" class="liste-taches">'+vueDeListe+'</ul>'
+        return vueDeListe + actionAjouter;
+    }
+        
+    var actionAjouter = '<li class="action" onClick="ajouterTache(this.parentNode)">+</li>';
+    for(nomListe in tableauTaches)
+    {
+        var listeTaches = tableauTaches[nomListe];
+        
+        vueDuTableau.innerHTML += '<ul id="'+nomListe+'" class="liste-taches">'+ecrireListe(listeTaches) + '</ul>'
     }
     
     var options = {
@@ -78,7 +136,11 @@
         revertOnSpill: false,              // spilling will put the element back where it was dragged from, if this is true
         removeOnSpill: false,              // spilling will `.remove` the element, if this is true
         mirrorContainer: document.body,    // set the element that gets mirror elements appended
-        ignoreInputTextSelection: true     // allows users to select input text, see details below
+        ignoreInputTextSelection: true,     // allows users to select input text, see details below
+        accepts: function (el, target, source, sibling) 
+        {
+            return sibling === null || el.className.indexOf("action") == -1;
+        }
     };
     
     dragula([document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')], options);
@@ -101,7 +163,7 @@
         for(var position = 0; position < lesTachesExercer.length; position++)
         {
             var tache = lesTachesExercer[position];
-            donneesListe[donneesListe.length] = tache.innerHTML;
+            if(tache.className.indexOf("action") == -1) donneesListe[donneesListe.length] = tache.innerHTML;
         }
         return donneesListe;
     }
