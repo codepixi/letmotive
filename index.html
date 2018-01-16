@@ -33,8 +33,7 @@
 		text-align: center;
 		display:flex;
 		justify-content:center;
-		background-color:blue;
-		border:solid 2px blue;
+		background-color:#cccccc;
     }
     
     #tableau-des-taches .liste-taches
@@ -88,6 +87,41 @@
     {
         width:100%;
     }
+	
+	#calendrier
+	{
+        clear:both;
+		text-align: center;
+		display:flex;
+		justify-content:center;	
+	}
+	#calendrier .jour
+	{
+		display:inline-block;
+		width:10rem;
+		height:20rem;
+		background-color:#ccffcc;
+		border-radius:0.5rem;
+		padding:1rem;
+		margin:0.5rem;
+		
+	}
+	#calendrier .jour .date
+	{
+		display:inline-block;
+		position:relative;
+		font-size:2em;
+		color:#333333;
+		width:100%;
+		font-weight:bold;
+		text-align:center;
+		margin-right:auto;
+		margin-left:auto;
+	}
+	#calendrier .jour .plan
+	{
+	
+	}
 </style>
 <link rel="stylesheet" type="text/css" href="lib/dragula.css"></link>
 <script type="text/javascript" src="lib/dragula.js"></script>
@@ -107,6 +141,10 @@
     </div>
         
     </form></div>
+	
+	<div id="calendrier">
+	
+	</div>
     
     <script type="text/javascript">
 	    
@@ -209,8 +247,17 @@
     };
     dragula([document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')], options).on("drop", atterrir);
 
-        
-    
+	var jour = new Date();
+	var vueCalendrier = document.getElementById("calendrier");
+	
+	for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
+	{
+		vueCalendrier.innerHTML += '<div class="jour"><span class="date">' + jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate() + '<span><div class="plan"></div></div>';
+	}
+
+	
+	
+
     </script>
     
 </body>
