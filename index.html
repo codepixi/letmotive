@@ -273,10 +273,9 @@
         return false;
     }
         
-    var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
     
-    var tachesParDefaut = {"exercer":["natation","danse","film"],"etudier":["internet","herboristerie","survie","irlandais"],"creer":["formation","page web","arbre"],"construire":["menage","reno","produit"]};
-	
+    var tachesParDefaut = {"exercer":["natation","danse","film"],"etudier":["internet","herboristerille","survie","irlandais"],"creer":["formation","page web","arbre"],"construire":["menage","reno","produit"]};
+    var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));	
     var tableauTaches = tachesParDefaut;
     if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
     {
@@ -287,6 +286,19 @@
 		localStorage.setItem("taches", JSON.stringify(tachesParDefaut));
 	}
 	
+    var calendrierParDefaut = {};
+    var calendrierEnregistre = JSON.parse(localStorage.getItem("calendrier"));	
+    var tableauCalendrier = calendrierParDefaut;
+    if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
+    {
+		tableauCalendrier = calendrierEnregistre;
+	}
+	else
+	{
+		localStorage.setItem("calendrier", JSON.stringify(calendrierParDefaut));
+	}
+	//alert(JSON.stringify(tableauCalendrier));
+		
     var vueDuTableau = document.querySelector('#tableau-des-taches');
     var actionAjouter = '<li class="action" onClick="ajouterTache(this.parentNode)">+</li>';
     for(nomListe in tableauTaches)
@@ -322,6 +334,15 @@
 		autreJour.innerHTML = '<span class="date">' + ladate + '<span>';
 		var planDeJournee = document.createElement('div');
 		planDeJournee.className = 'plan';
+		//alert(tableauCalendrier['jour-'+ladate]);
+		//alert(tableauCalendrier[ladate].length);
+		if(tableauCalendrier['jour-'+ladate])
+		for(var positionChoix = 0; positionChoix < tableauCalendrier['jour-'+ladate].length; positionChoix++)
+		{
+            var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
+            planDeJournee.innerHTML += '<li>'+descriptionTache+'</li>';
+		}
+		
 		autreJour.appendChild(planDeJournee);
 		vueCalendrier.appendChild(autreJour);
 		listeCiblesJour[listeCiblesJour.length] = planDeJournee;
