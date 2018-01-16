@@ -109,42 +109,7 @@
     </form></div>
     
     <script type="text/javascript">
-    
-    var listeEnEdition = "";
-    
-    function ajouterTache(liste)
-    {
-        var boite = document.querySelector("#formulaire-nouvelle-tache");
-        boite.style.display = "block";
-        boite.style.position = "absolute";
-        //boite.style.x = event.clientX;
-        //boite.style.y = event.clientY;
-        listeEnEdition = liste;
-    }
-    function enregistrerTache()
-    {
-        var boite = document.querySelector("#formulaire-nouvelle-tache");
-        boite.style.display = "none";
-        lesTaches = JSON.parse(localStorage.getItem("taches"));
-        lesTaches[listeEnEdition.id][lesTaches[listeEnEdition.id].length] = document.querySelector("#nouvelle-tache-nom").value;
-        //alert(lesTaches[listeEnEdition.id]);
-        listeEnEdition.innerHTML = ecrireListe(lesTaches[listeEnEdition.id]);
-        localStorage.setItem("taches", JSON.stringify(lesTaches));
-        document.querySelector("#nouvelle-tache-nom").value = "";
-        return false;
-    }
-    
-    var tachesParDefaut = {"exercer":["natation","danse"],"etudier":["internet","herboristerie","survie"],"creer":["formation","page web"],"construire":["menage","reno","produit"]};
-    
-    var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
-
-    var vueDuTableau = document.querySelector('#tableau-des-taches');
-    
-    var tableauTaches = tachesParDefaut;
-    if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
-        tableauTaches = tachesEnregistrees;
-
-        
+	    
     function ecrireListe(listeTaches)
     {
         var vueDeListe = '';
@@ -154,35 +119,13 @@
         }
         return vueDeListe + actionAjouter;
     }
-        
-    var actionAjouter = '<li class="action" onClick="ajouterTache(this.parentNode)">+</li>';
-    for(nomListe in tableauTaches)
-    {
-        var listeTaches = tableauTaches[nomListe];
-        
-        vueDuTableau.innerHTML += '<ul id="'+nomListe+'" class="liste-taches">'+ecrireListe(listeTaches) + '</ul>'
-    }
-    
-    var options = {
-        direction: 'vertical',
-        copy: false, copySortSource: false,
-        revertOnSpill: false, removeOnSpill: false, 
-        mirrorContainer: document.body,    
-        ignoreInputTextSelection: false,
-        accepts: function (obj, target, source, sibling) 
-        {
-            return sibling === null || obj.className.indexOf("action") == -1;
-        }
-    };
-    
+                
     function atterrir(obj, to, from)
     {
         var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
         localStorage.setItem("taches", JSON.stringify(exporter())); // TODO optimiser        
     }
-    
-    dragula([document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')], options).on("drop", atterrir);
-    
+        
     
     function exporter()
     {
@@ -206,7 +149,67 @@
         }
         return donneesListe;
     }
-    //localStorage.setItem("taches", JSON.stringify(exporter()));
+    var listeEnEdition = "";
+    
+    function ajouterTache(liste)
+    {
+        var boite = document.querySelector("#formulaire-nouvelle-tache");
+        boite.style.display = "block";
+        boite.style.position = "absolute";
+        //boite.style.x = event.clientX;
+        //boite.style.y = event.clientY;
+		document.getElementById("nouvelle-tache-nom").focus();
+        listeEnEdition = liste;
+    }
+    function enregistrerTache()
+    {
+        var boite = document.querySelector("#formulaire-nouvelle-tache");
+        boite.style.display = "none";
+        lesTaches = JSON.parse(localStorage.getItem("taches"));
+        lesTaches[listeEnEdition.id][lesTaches[listeEnEdition.id].length] = document.querySelector("#nouvelle-tache-nom").value;
+        //alert(lesTaches[listeEnEdition.id]);
+        listeEnEdition.innerHTML = ecrireListe(lesTaches[listeEnEdition.id]);
+        localStorage.setItem("taches", JSON.stringify(lesTaches));
+        document.querySelector("#nouvelle-tache-nom").value = "";
+        return false;
+    }
+        
+    var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
+    
+    var tachesParDefaut = {"exercer":["natation","danse"],"etudier":["internet","herboristerie","survie"],"creer":["formation","page web"],"construire":["menage","reno","produit"]};
+	
+    var tableauTaches = tachesParDefaut;
+    if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
+    {
+		tableauTaches = tachesEnregistrees;
+	}
+	else
+	{
+		localStorage.setItem("taches", JSON.stringify(tachesParDefaut));
+	}
+	
+    var vueDuTableau = document.querySelector('#tableau-des-taches');
+    var actionAjouter = '<li class="action" onClick="ajouterTache(this.parentNode)">+</li>';
+    for(nomListe in tableauTaches)
+    {
+        var listeTaches = tableauTaches[nomListe];        
+        vueDuTableau.innerHTML += '<ul id="'+nomListe+'" class="liste-taches">'+ecrireListe(listeTaches) + '</ul>';
+    }
+		
+    var options = {
+        direction: 'vertical',
+        copy: false, copySortSource: false,
+        revertOnSpill: false, removeOnSpill: false, 
+        mirrorContainer: document.body,    
+        ignoreInputTextSelection: false,
+        accepts: function (obj, target, source, sibling) 
+        {
+            return sibling === null || obj.className.indexOf("action") == -1;
+        }
+    };
+    dragula([document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')], options).on("drop", atterrir);
+
+        
     
     </script>
     
