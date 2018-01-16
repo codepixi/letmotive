@@ -120,7 +120,15 @@
 	}
 	#calendrier .jour .plan
 	{
-	
+		background-color:#333333;
+		width:9rem;
+		height:10rem;
+		padding-top:0.5rem;
+	}
+	#calendrier .jour .plan li
+	{
+		width:7rem;
+		background-color:blue;
 	}
 </style>
 <link rel="stylesheet" type="text/css" href="lib/dragula.css"></link>
@@ -157,15 +165,67 @@
         }
         return vueDeListe + actionAjouter;
     }
-                
-    function atterrir(obj, to, from)
-    {
+        
+	function atterrirDansListe(obj)
+	{
         var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
-        localStorage.setItem("taches", JSON.stringify(exporter())); // TODO optimiser        
+        localStorage.setItem("taches", JSON.stringify(exporterListes())); // TODO optimiser 		
+	}
+	function quitterUneListe(obj, liste)
+	{
+		var objEnDestruction = null;
+		var listeTaches = liste.getElementsByTagName('li');
+		for(var position = 0; position < listeTaches.length; position++)
+		{
+			var tache = listeTaches[position];
+			if(tache.innerHTML == obj.innerHTML) objEnDestruction = tache;
+		}
+		liste.removeChild(objEnDestruction);
+		delete tableauTaches[liste.id][tache.innerHTML];
+	}
+	function atterrirDansJournee(obj)
+	{
+        //var calendrierPlan = JSON.parse(localStorage.getItem("calendrier"));
+		//alert(JSON.stringify(exporterCalendrier()));
+        localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
+	}
+        
+    function atterrir(obj, cible, origine)
+    {
+		if(cible.className.indexOf('liste-taches') != -1)
+		{
+			quitterUneListe(obj, origine);
+			atterrirDansListe(obj);
+		}
+		else if(cible.className.indexOf('plan') != -1)
+		{
+			atterrirDansJournee(obj);
+		}
     }
         
-    
-    function exporter()
+
+	function exporterCalendrier()
+	{
+		var calendrierPlan = {};
+		var calendrier = document.getElementById('calendrier');
+		var lesJour = calendrier.getElementsByClassName('jour');
+		for(var positionJour = 0; positionJour < lesJour.length; positionJour++)
+		{
+			var jour = lesJour[positionJour];
+			var lesChoix = jour.getElementsByTagName('li');
+	
+			calendrierPlan[jour.id] = [];
+			
+			for(var positionChoix = 0; positionChoix < lesChoix.length; positionChoix++)
+			{
+				var choix = lesChoix[positionChoix];
+				calendrierPlan[jour.id][calendrierPlan[jour.id].length] = choix.innerHTML;
+			}
+		}
+		return calendrierPlan;
+	}
+		
+    function exporterListes()
     {
         var donnees = {};
         donnees["exercer"] = lireListe("exercer");
@@ -245,18 +305,38 @@
             return sibling === null || obj.className.indexOf("action") == -1;
         }
     };
-    dragula([document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')], options).on("drop", atterrir);
+	var lesQuatresSortes = [document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')];
 
 	var jour = new Date();
 	var vueCalendrier = document.getElementById("calendrier");
 	
+	var listeCiblesJour = [];
 	for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
 	{
-		vueCalendrier.innerHTML += '<div class="jour"><span class="date">' + jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate() + '<span><div class="plan"></div></div>';
+		var ladate = jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate();
+		//vueCalendrier.innerHTML += '<div class="jour" id="jour-' + ladate + '"><span class="date">' + ladate + '<span><ul class="plan"></ul></div>';
+		var autreJour = document.createElement("div");
+		autreJour.id = 'jour-' + ladate;
+		autreJour.className = 'jour';
+		autreJour.innerHTML = '<span class="date">' + ladate + '<span>';
+		var planDeJournee = document.createElement('div');
+		planDeJournee.className = 'plan';
+		autreJour.appendChild(planDeJournee);
+		vueCalendrier.appendChild(autreJour);
+		listeCiblesJour[listeCiblesJour.length] = planDeJournee;
 	}
-
-	
-	
+    var optionsDeJournee = {
+        direction: 'vertical',
+        copy: true, copySortSource: false,
+        revertOnSpill: false, removeOnSpill: false, 
+        mirrorContainer: document.body,    
+        ignoreInputTextSelection: false,
+        accepts: function (obj, target, source, sibling) 
+        {
+            return sibling === null || obj.className.indexOf("action") == -1;
+        }
+    };
+	dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
 
     </script>
     
