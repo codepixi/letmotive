@@ -30,6 +30,11 @@
     #tableau-des-taches
     {
         clear:both;
+		text-align: center;
+		display:flex;
+		justify-content:center;
+		background-color:blue;
+		border:solid 2px blue;
     }
     
     #tableau-des-taches .liste-taches
@@ -60,9 +65,14 @@
     #formulaire-nouvelle-tache 
     {
         background-color:#beedbb;
-        border-radius:20px;
-        padding:5px;
-        border:solid 3px black;
+        border-radius:1.5em;
+        padding:1em;
+        border:solid 0.2em black;
+		margin-top:1em;
+		width:12em;
+		margin-left:-6em;
+		left:50%;
+		
     }
     #formulaire-nouvelle-tache form div
     {
@@ -71,6 +81,12 @@
     #formulaire-nouvelle-tache form div label
     {
         display:block;
+		font-weight:bold;
+		color:#333333;
+    }
+    #formulaire-nouvelle-tache form div input
+    {
+        width:100%;
     }
 </style>
 <link rel="stylesheet" type="text/css" href="lib/dragula.css"></link>
@@ -101,8 +117,8 @@
         var boite = document.querySelector("#formulaire-nouvelle-tache");
         boite.style.display = "block";
         boite.style.position = "absolute";
-        boite.style.x = event.clientX;
-        boite.style.y = event.clientY;
+        //boite.style.x = event.clientX;
+        //boite.style.y = event.clientY;
         listeEnEdition = liste;
     }
     function enregistrerTache()
