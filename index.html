@@ -336,7 +336,7 @@
 		planDeJournee.className = 'plan';
 		//alert(tableauCalendrier['jour-'+ladate]);
 		//alert(tableauCalendrier[ladate].length);
-		if(tableauCalendrier['jour-'+ladate])
+		if(tableauCalendrier && tableauCalendrier['jour-'+ladate])
 		for(var positionChoix = 0; positionChoix < tableauCalendrier['jour-'+ladate].length; positionChoix++)
 		{
             var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
