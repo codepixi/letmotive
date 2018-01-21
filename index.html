@@ -296,7 +296,12 @@
 			for(var positionChoix = 0; positionChoix < lesChoix.length; positionChoix++)
 			{
 				var choix = lesChoix[positionChoix];
-				calendrierPlan[jour.id][calendrierPlan[jour.id].length] = choix.innerHTML;
+				var plan = {};
+				plan['nom'] = choix.innerHTML;
+				plan['detail'] = choix.parentNode.getElementsByClassName('detail')[0].innerHTML;
+				if(!plan['detail']) plan['detail'] = '';
+				calendrierPlan[jour.id][calendrierPlan[jour.id].length] = plan;
+				//calendrierPlan[jour.id][calendrierPlan[jour.id].length]['detail'] = choix.parentNode.getElementsByClassName('detail')[0].innerHTML;
 			}
 		}
 		return calendrierPlan;
@@ -415,8 +420,10 @@
 		if(tableauCalendrier && tableauCalendrier['jour-'+ladate])
 		for(var positionChoix = 0; positionChoix < tableauCalendrier['jour-'+ladate].length; positionChoix++)
 		{
+            console.log(JSON.stringify(descriptionTache));
             var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
-            planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache+'</span><span class="detail" onclick="editerDetail(this)">&nbsp;</span></li>';
+            if(!descriptionTache['detail']) descriptionTache['detail'] = '';
+            planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache['nom']+'</span><span class="detail" onclick="editerDetail(this)">'+descriptionTache['detail']+'</span></li>';
 		}
 		
 		autreJour.appendChild(planDeJournee);
