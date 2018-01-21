@@ -231,12 +231,23 @@
 		if(tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML]) delete tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML];
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
+	function enregistrerDetail(obj)
+	{
+        obj.parentNode.innerHTML = obj.getElementsByTagName('input')[0].value;
+        localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
+	}
+	function editerDetail(obj)
+	{
+        obj.innerHTML = '<form onsubmit="enregistrerDetail(this); return false;"><input type="text" value="'+obj.innerHTML+'"></form>';
+        obj.onclick = function() {enregistrerDetail(this)};
+        obj.getElementsByTagName('input')[0].focus();
+	}
 	function atterrirDansJournee(obj)
 	{
         //var calendrierPlan = JSON.parse(localStorage.getItem("calendrier"));
 		//alert(JSON.stringify(exporterCalendrier()));
 		obj.addEventListener('click', appliquerGestures, false);
-		obj.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail">detail</span>';
+		obj.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetail(this)">&nbsp;</span>';
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
 	
@@ -405,7 +416,7 @@
 		for(var positionChoix = 0; positionChoix < tableauCalendrier['jour-'+ladate].length; positionChoix++)
 		{
             var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
-            planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache+'</span><span class="detail">detail</span></li>';
+            planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache+'</span><span class="detail" onclick="editerDetail(this)">&nbsp;</span></li>';
 		}
 		
 		autreJour.appendChild(planDeJournee);
