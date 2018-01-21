@@ -129,6 +129,7 @@
 	#calendrier .jour .plan li
 	{
 		width:7rem;
+		height:4em;
 		background-color:blue;
 	}
 </style>
@@ -156,7 +157,32 @@
 	</div>
     
     <script type="text/javascript">
-	    
+    
+	function cliquerSimple(obj)
+    {
+        alert('simple');
+    }
+    function cliquerDouble(obj)
+    {
+        alert('double');
+    }
+	var decompte = 0;
+	var appliquerGestures = function() 
+	{
+        decompte++;
+        if (decompte === 1) {
+            clicTimer = setTimeout(function() 
+            {
+                decompte = 0;
+                cliquerSimple(this);
+            }, 300);
+        } else if (decompte === 2) {
+            clearTimeout(clickTimer);
+            decompte = 0;
+            cliquerDouble(this);
+        }
+    };
+    
     function ecrireListe(listeTaches)
     {
         var vueDeListe = '';
@@ -185,7 +211,7 @@
 		liste.removeChild(objEnDestruction);
 		delete tableauTaches[liste.id][tache.innerHTML];
 	}
-	function quitterUnPlan(obj, plan)
+	function quitterUneJournee(obj, plan)
 	{
 		var objEnDestruction = null;
 		var listeTaches = plan.getElementsByTagName('li');
@@ -195,13 +221,14 @@
 			if(tache.innerHTML == obj.innerHTML) objEnDestruction = tache;
 		}
 		if(plan.contains(objEnDestruction))plan.removeChild(objEnDestruction);
-		if(tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML])delete tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML];
+		if(tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML]) delete tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML];
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
 	function atterrirDansJournee(obj)
 	{
         //var calendrierPlan = JSON.parse(localStorage.getItem("calendrier"));
 		//alert(JSON.stringify(exporterCalendrier()));
+		obj.addEventListener('click', appliquerGestures, false);
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
 	
@@ -220,7 +247,7 @@
 		
 		if(origine.className.indexOf('plan') != -1)
 		{
-			quitterUnPlan(obj, origine);
+			quitterUneJournee(obj, origine);
 			fusionnerDansListe(obj, cible);
 		}
 		else if(cible.className.indexOf('liste-taches') != -1)
@@ -370,7 +397,7 @@
 		for(var positionChoix = 0; positionChoix < tableauCalendrier['jour-'+ladate].length; positionChoix++)
 		{
             var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
-            planDeJournee.innerHTML += '<li>'+descriptionTache+'</li>';
+            planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)">'+descriptionTache+'</li>';
 		}
 		
 		autreJour.appendChild(planDeJournee);
@@ -389,6 +416,8 @@
         }
     };
 	dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
+	
+
 
     </script>
     
