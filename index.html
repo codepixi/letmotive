@@ -258,6 +258,7 @@
         
     function atterrir(obj, cible, origine)
     {
+        if(!cible) return false;
 		console.log('DRAG & DROP == DEBUT ==');
 		console.log('origine : ' + origine + ':' + origine.id + ':' + origine.className);
 		console.log('obj : ' + obj + ':' + obj.id + ':' + obj.className);
@@ -382,11 +383,12 @@
 	var lesQuatresSortes = [document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')];
 
 	
+    var listeCiblesJour = [];
+    var calendrierParDefaut = {};
+    var tableauCalendrier = calendrierParDefaut;
 	function afficherCalendrier()
 	{
-        var calendrierParDefaut = {};
         var calendrierEnregistre = JSON.parse(localStorage.getItem("calendrier"));	
-        var tableauCalendrier = calendrierParDefaut;
         if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
         {
             tableauCalendrier = calendrierEnregistre;
@@ -400,7 +402,6 @@
         var jour = new Date();
         var vueCalendrier = document.getElementById("calendrier");
         
-        var listeCiblesJour = [];
         for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
         {
             var ladate = jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate();
