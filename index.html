@@ -401,35 +401,43 @@
     };
 	var lesQuatresSortes = [document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')];
 
-	var jour = new Date();
-	var vueCalendrier = document.getElementById("calendrier");
 	
-	var listeCiblesJour = [];
-	for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
+	function afficherCalendrier()
 	{
-		var ladate = jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate();
-		//vueCalendrier.innerHTML += '<div class="jour" id="jour-' + ladate + '"><span class="date">' + ladate + '<span><ul class="plan"></ul></div>';
-		var autreJour = document.createElement("div");
-		autreJour.id = 'jour-' + ladate;
-		autreJour.className = 'jour';
-		autreJour.innerHTML = '<span class="date">' + ladate + '<span>';
-		var planDeJournee = document.createElement('ul');
-		planDeJournee.className = 'plan';
-		//alert(tableauCalendrier['jour-'+ladate]);
-		//alert(tableauCalendrier[ladate].length);
-		if(tableauCalendrier && tableauCalendrier['jour-'+ladate])
-		for(var positionChoix = 0; positionChoix < tableauCalendrier['jour-'+ladate].length; positionChoix++)
-		{
-            console.log(JSON.stringify(descriptionTache));
-            var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
-            if(!descriptionTache['detail']) descriptionTache['detail'] = '';
-            planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache['nom']+'</span><span class="detail" onclick="editerDetail(this)">'+descriptionTache['detail']+'</span></li>';
-		}
-		
-		autreJour.appendChild(planDeJournee);
-		vueCalendrier.appendChild(autreJour);
-		listeCiblesJour[listeCiblesJour.length] = planDeJournee;
-	}
+        
+        var jour = new Date();
+        var vueCalendrier = document.getElementById("calendrier");
+        
+        var listeCiblesJour = [];
+        for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
+        {
+            var ladate = jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate();
+            //vueCalendrier.innerHTML += '<div class="jour" id="jour-' + ladate + '"><span class="date">' + ladate + '<span><ul class="plan"></ul></div>';
+            var autreJour = document.createElement("div");
+            autreJour.id = 'jour-' + ladate;
+            autreJour.className = 'jour';
+            autreJour.innerHTML = '<span class="date">' + ladate + '<span>';
+            var planDeJournee = document.createElement('ul');
+            planDeJournee.className = 'plan';
+            //alert(tableauCalendrier['jour-'+ladate]);
+            //alert(tableauCalendrier[ladate].length);
+            if(tableauCalendrier && tableauCalendrier['jour-'+ladate])
+            for(var positionChoix = 0; positionChoix < tableauCalendrier['jour-'+ladate].length; positionChoix++)
+            {
+                console.log(JSON.stringify(descriptionTache));
+                var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
+                if(!descriptionTache['detail']) descriptionTache['detail'] = '';
+                planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache['nom']+'</span><span class="detail" onclick="editerDetail(this)">'+descriptionTache['detail']+'</span></li>';
+            }
+            
+            autreJour.appendChild(planDeJournee);
+            vueCalendrier.appendChild(autreJour);
+            listeCiblesJour[listeCiblesJour.length] = planDeJournee;
+        }
+    }
+    
+    afficherCalendrier();
+    
     var optionsDeJournee = {
         direction: 'vertical',
         copy: true, copySortSource: false,
