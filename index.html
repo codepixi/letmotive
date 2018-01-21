@@ -133,6 +133,10 @@
 		background-color:blue;
 		text-align:center;
 	}
+	#calendrier .jour .plan li.termine
+	{
+        background-color:green;
+	}
 	#calendrier .jour .plan .detail
 	{
 		width:7rem;
@@ -168,25 +172,28 @@
 	function cliquerSimple(obj)
     {
         console.log('simple clic');
+        console.log('obj ' + obj + ' ' + obj.className);
+        if(obj.className.indexOf("termine") == -1) obj.classList.add("termine");
+        else  obj.classList.remove("termine");
     }
     function cliquerDouble(obj)
     {
         console.log('double clic');
     }
 	var decompte = 0;
-	var appliquerGestures = function() 
+	function appliquerGestures(obj) 
 	{
         decompte++;
         if (decompte === 1) {
             clicTimer = setTimeout(function() 
             {
                 decompte = 0;
-                cliquerSimple(this);
+                cliquerSimple(obj);
             }, 300);
         } else if (decompte === 2) {
             clearTimeout(clicTimer);
             decompte = 0;
-            cliquerDouble(this);
+            cliquerDouble(obj);
         }
     };
     
@@ -246,7 +253,7 @@
 	{
         //var calendrierPlan = JSON.parse(localStorage.getItem("calendrier"));
 		//alert(JSON.stringify(exporterCalendrier()));
-		obj.addEventListener('click', appliquerGestures, false);
+		obj.addEventListener('click', function(){appliquerGestures(this)}, false);
 		obj.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetail(this)">&nbsp;</span>';
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
