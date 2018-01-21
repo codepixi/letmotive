@@ -131,6 +131,13 @@
 		width:7rem;
 		height:4em;
 		background-color:blue;
+		text-align:center;
+	}
+	#calendrier .jour .plan .detail
+	{
+		width:7rem;
+		display:block;
+		background-color:pink;
 	}
 </style>
 <link rel="stylesheet" type="text/css" href="lib/dragula.css"></link>
@@ -270,7 +277,7 @@
 		for(var positionJour = 0; positionJour < lesJour.length; positionJour++)
 		{
 			var jour = lesJour[positionJour];
-			var lesChoix = jour.getElementsByTagName('li');
+			var lesChoix = jour.getElementsByClassName('tache');
 	
 			calendrierPlan[jour.id] = [];
 			
@@ -397,7 +404,7 @@
 		for(var positionChoix = 0; positionChoix < tableauCalendrier['jour-'+ladate].length; positionChoix++)
 		{
             var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
-            planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)">'+descriptionTache+'</li>';
+            planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache+'</span><span class="detail">detail</span></li>';
 		}
 		
 		autreJour.appendChild(planDeJournee);
