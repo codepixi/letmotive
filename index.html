@@ -236,7 +236,7 @@
         //var calendrierPlan = JSON.parse(localStorage.getItem("calendrier"));
 		//alert(JSON.stringify(exporterCalendrier()));
 		obj.addEventListener('click', appliquerGestures, false);
-		obj.innerHTML += '<span class="detail">detail</span>';
+		obj.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail">detail</span>';
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
 	
