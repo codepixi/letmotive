@@ -354,57 +354,49 @@
         return false;
     }
         
-    
-    var tachesParDefaut = {"exercer":["natation","danse","film"],"etudier":["internet","herboristerille","survie","irlandais"],"creer":["formation","page web","arbre"],"construire":["menage","reno","produit"]};
-    var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));	
-    var tableauTaches = tachesParDefaut;
-    if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
-    {
-		tableauTaches = tachesEnregistrees;
-	}
-	else
-	{
-		localStorage.setItem("taches", JSON.stringify(tachesParDefaut));
-	}
-	
-    var calendrierParDefaut = {};
-    var calendrierEnregistre = JSON.parse(localStorage.getItem("calendrier"));	
-    var tableauCalendrier = calendrierParDefaut;
-    if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
-    {
-		tableauCalendrier = calendrierEnregistre;
-	}
-	else
-	{
-		localStorage.setItem("calendrier", JSON.stringify(calendrierParDefaut));
-	}
-	//alert(JSON.stringify(tableauCalendrier));
-		
-    var vueDuTableau = document.querySelector('#tableau-des-taches');
     var actionAjouter = '<li class="action" onClick="ajouterTache(this.parentNode)">+</li>';
-    for(nomListe in tableauTaches)
+    function afficherTableauTaches()
     {
-        var listeTaches = tableauTaches[nomListe];        
-        vueDuTableau.innerHTML += '<ul id="'+nomListe+'" class="liste-taches">'+ecrireListe(listeTaches) + '</ul>';
-    }
-		
-    var options = {
-        direction: 'vertical',
-        copy: false, copySortSource: false,
-        revertOnSpill: false, removeOnSpill: false, 
-        mirrorContainer: document.body,    
-        ignoreInputTextSelection: false,
-        accepts: function (obj, target, source, sibling) 
+        var tachesParDefaut = {"exercer":["natation","danse","film"],"etudier":["internet","herboristerille","survie","irlandais"],"creer":["formation","page web","arbre"],"construire":["menage","reno","produit"]};
+        var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));	
+        var tableauTaches = tachesParDefaut;
+        if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
         {
-            return sibling === null || obj.className.indexOf("action") == -1;
+            tableauTaches = tachesEnregistrees;
         }
-    };
+        else
+        {
+            localStorage.setItem("taches", JSON.stringify(tachesParDefaut));
+        }
+                    
+        var vueDuTableau = document.querySelector('#tableau-des-taches');
+        for(nomListe in tableauTaches)
+        {
+            var listeTaches = tableauTaches[nomListe];        
+            vueDuTableau.innerHTML += '<ul id="'+nomListe+'" class="liste-taches">'+ecrireListe(listeTaches) + '</ul>';
+        }
+    
+    }
+    afficherTableauTaches();
+		
 	var lesQuatresSortes = [document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')];
 
 	
 	function afficherCalendrier()
 	{
-        
+        var calendrierParDefaut = {};
+        var calendrierEnregistre = JSON.parse(localStorage.getItem("calendrier"));	
+        var tableauCalendrier = calendrierParDefaut;
+        if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
+        {
+            tableauCalendrier = calendrierEnregistre;
+        }
+        else
+        {
+            localStorage.setItem("calendrier", JSON.stringify(calendrierParDefaut));
+        }
+        //alert(JSON.stringify(tableauCalendrier));
+
         var jour = new Date();
         var vueCalendrier = document.getElementById("calendrier");
         
