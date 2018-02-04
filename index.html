@@ -149,6 +149,14 @@
 </head>
 <body>
 
+    <div>
+            <div id="action-tableau-des-taches">
+                <a id="action-tableau-des-taches-fermer" href="javascript:fermerTableauTaches()">X</a>
+                <a id="action-tableau-des-taches-ouvrir" href="javascript:ouvrirTableauTaches()" style="display:none;">T</a>
+            </div>
+            
+    </div>
+
     <div id="tableau-des-taches">
     
 
@@ -166,9 +174,25 @@
 	<div id="calendrier">
 	
 	</div>
-    
+        
     <script type="text/javascript">
     
+    function fermerTableauTaches()
+    {
+        var vueDuTableau = document.querySelector('#tableau-des-taches');
+        vueDuTableau.style.display = "none";
+        document.querySelector('#action-tableau-des-taches-fermer').style.display = "none";
+        document.querySelector('#action-tableau-des-taches-ouvrir').style.display = "block";
+    }
+
+    function ouvrirTableauTaches()
+    {
+        var vueDuTableau = document.querySelector('#tableau-des-taches');
+        vueDuTableau.style.display = "block";
+        document.querySelector('#action-tableau-des-taches-fermer').style.display = "block";
+        document.querySelector('#action-tableau-des-taches-ouvrir').style.display = "none";
+    }
+        
 	function cliquerSimple(obj)
     {
         console.log('simple clic');
@@ -383,9 +407,10 @@
             var listeTaches = tableauTaches[nomListe];        
             vueDuTableau.innerHTML += '<ul id="'+nomListe+'" class="liste-taches">'+ecrireListe(listeTaches) + '</ul>';
         }
-    
+
     }
     afficherTableauTaches();
+    
 		
 	var lesQuatresSortes = [document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')];
 
