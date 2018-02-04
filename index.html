@@ -102,19 +102,41 @@
 	
 	#calendrier
 	{
+        position:relative;
         clear:both;
 		text-align: center;
 		display:flex;
 		justify-content:center;	
 	}
+	
+	/* https://stackoverflow.com/a/12686489 */
+	#calendrier .action-voyager-temps:before 
+	{
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: 0em;
+    }
+	
+	#calendrier .action-voyager-temps
+	{
+        display:inline-block;
+        font-size:30px;
+        font-weight:bold;
+        color:#cccccc;
+        text-decoration:none;
+        height:100%;
+        vertical-align:middle;
+	}
 	#calendrier .jour
 	{
 		display:inline-block;
-		width:10rem;
+		width:9rem;
 		height:20rem;
 		background-color:#ccffcc;
 		border-radius:0.5rem;
-		padding:1rem;
+		padding:0.5rem;
 		margin:0.5rem;
 		
 	}
@@ -185,10 +207,19 @@
     </form></div>
 	
 	<div id="calendrier">
-	
+        <a class="action-voyager-temps" href="javascript:voyagerTemps(-1)">&lt;&lt;</a>
+        <div id="calendrier-jours">
+        
+        </div>
+        <a class="action-voyager-temps" href="javascript:voyagerTemps(1)">&gt;&gt;</a>
 	</div>
         
     <script type="text/javascript">
+    
+    function voyagerTemps(pas)
+    {
+        
+    }
     
     function fermerTableauTaches()
     {
@@ -445,7 +476,7 @@
         //alert(JSON.stringify(tableauCalendrier));
 
         var jour = new Date();
-        var vueCalendrier = document.getElementById("calendrier");
+        var vueCalendrier = document.getElementById("calendrier-jours");
         
         for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
         {
