@@ -159,7 +159,8 @@
     <div>
             <div id="action-tableau-des-taches">
                 <a id="action-tableau-des-taches-fermer" href="javascript:fermerTableauTaches()">X</a>
-                <a id="action-tableau-des-taches-ouvrir" href="javascript:ouvrirTableauTaches()" style="display:none;">T</a>
+                <a id="action-tableau-des-taches-ouvrir" href="javascript:ouvrirTableauTaches()" style="display:none;">A</a>
+                Tableau des tâches possibles 
             </div>
             
     </div>
@@ -189,14 +190,14 @@
         var vueDuTableau = document.querySelector('#tableau-des-taches');
         vueDuTableau.style.display = "none";
         document.querySelector('#action-tableau-des-taches-fermer').style.display = "none";
-        document.querySelector('#action-tableau-des-taches-ouvrir').style.display = "block";
+        document.querySelector('#action-tableau-des-taches-ouvrir').style.display = "";
     }
 
     function ouvrirTableauTaches()
     {
         var vueDuTableau = document.querySelector('#tableau-des-taches');
         vueDuTableau.style.display = "";
-        document.querySelector('#action-tableau-des-taches-fermer').style.display = "block";
+        document.querySelector('#action-tableau-des-taches-fermer').style.display = "";
         document.querySelector('#action-tableau-des-taches-ouvrir').style.display = "none";
     }
         
