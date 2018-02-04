@@ -35,7 +35,14 @@
 		justify-content:center;
 		background-color:#cccccc;
     }
-    
+    #tableau-des-taches ul[title]::before 
+    {
+        text-transform:capitalize;
+        content: attr(title);
+        display: block;
+        font-weight: bold;
+        padding: 4px;
+    }    
     #tableau-des-taches .liste-taches
     {
     
@@ -405,7 +412,7 @@
         for(nomListe in tableauTaches)
         {
             var listeTaches = tableauTaches[nomListe];        
-            vueDuTableau.innerHTML += '<ul id="'+nomListe+'" class="liste-taches">'+ecrireListe(listeTaches) + '</ul>';
+            vueDuTableau.innerHTML += '<ul id="'+ nomListe+'" class="liste-taches" title="'+nomListe+'">'+ecrireListe(listeTaches) + '</ul>';
         }
 
     }
