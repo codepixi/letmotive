@@ -216,9 +216,20 @@
         
     <script type="text/javascript">
     
+    var jourCalendrier = new Date();
+    
     function voyagerTemps(pas)
     {
+        console.log("avant " + jourCalendrier.getDate());
+        jourCalendrier.setDate(jourCalendrier.getDate()+pas);
+        console.log("apres " + jourCalendrier.getDate());
+        afficherCalendrier(jourCalendrier);
+        console.log("fin " + jourCalendrier.getDate());
         
+        //alert(listeCiblesJour);
+        deplacements.destroy();
+        deplacements = dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
+
     }
     
     function fermerTableauTaches()
@@ -462,8 +473,9 @@
     var listeCiblesJour = [];
     var calendrierParDefaut = {};
     var tableauCalendrier = calendrierParDefaut;
-	function afficherCalendrier()
+	function afficherCalendrier(jourCalendrier = new Date())
 	{
+	
         var calendrierEnregistre = JSON.parse(localStorage.getItem("calendrier"));	
         if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
         {
@@ -475,9 +487,10 @@
         }
         //alert(JSON.stringify(tableauCalendrier));
 
-        var jour = new Date();
         var vueCalendrier = document.getElementById("calendrier-jours");
+        vueCalendrier.innerHTML = "";
         
+        var jour = new Date(JSON.parse(JSON.stringify(jourCalendrier)));
         for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
         {
             var ladate = jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate();
@@ -518,7 +531,7 @@
             return sibling === null || obj.className.indexOf("action") == -1  || true;
         }
     };
-	dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
+	var deplacements = dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
 	
 
 
