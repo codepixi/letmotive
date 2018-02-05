@@ -220,6 +220,8 @@
     
     function voyagerTemps(pas)
     {
+        deplacements.destroy();
+        
         console.log("avant " + jourCalendrier.getDate());
         jourCalendrier.setDate(jourCalendrier.getDate()+pas);
         console.log("apres " + jourCalendrier.getDate());
@@ -227,7 +229,6 @@
         console.log("fin " + jourCalendrier.getDate());
         
         //alert(listeCiblesJour);
-        deplacements.destroy();
         deplacements = dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
 
     }
@@ -300,7 +301,7 @@
 			var tache = listeTaches[position];
 			if(tache.innerHTML == obj.innerHTML) objEnDestruction = tache;
 		}
-		alert(objEnDestruction);
+		//alert(objEnDestruction);
 		liste.removeChild(objEnDestruction);
 		delete tableauTaches[liste.id][tache.innerHTML];
 	}
@@ -331,7 +332,7 @@
 	function atterrirDansJournee(obj)
 	{
         //var calendrierPlan = JSON.parse(localStorage.getItem("calendrier"));
-		//alert(JSON.stringify(exporterCalendrier()));
+		//alert(JSON.stringify(exporterCalendrier());
 		obj.addEventListener('click', function(){appliquerGestures(this)}, false);
 		obj.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetail(this)">&nbsp;</span>';
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
@@ -531,7 +532,53 @@
             return sibling === null || obj.className.indexOf("action") == -1  || true;
         }
     };
-	var deplacements = dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
+    
+    
+    
+    var picnicFinishCallback;
+    var origine;
+    var traveler;
+    var cible;
+    function picnicStart(evenement)
+    {
+        traveler = evenement.target;
+        origine = evenement.target.parentNode;
+        //alert('traveler ' + traveler);
+        //alert(evenement.target.innerHTML);
+    }
+    function picnicStop(evenement)
+    {
+        evenement.preventDefault();
+    }
+    function picnicFinish(evenement)
+    {
+        evenement.preventDefault();
+        //var data = evenement.dataTransfer.getData("text");
+        //evenement.target.appendChild(document.getElementById(data));
+        cible = evenement.target;
+        cible.appendChild(traveler);
+        picnicFinishCallback(traveler, cible, origine);
+    }
+    
+    function picnic(listeZones, options, atterrir)
+    {
+        for(positionZone = 0; positionZone < listeZones.length; positionZone++)
+        {
+            zone = listeZones[positionZone];
+            listeObjets = zone.childNodes;
+            for(positionObjet = 0; positionObjet < listeObjets.length; positionObjet++)
+            {
+                objet = listeObjets[positionObjet];
+                objet.draggable = true;
+                objet.ondragstart = picnicStart;
+            }
+            zone.ondragover = picnicStop;
+            zone.ondrop = picnicFinish;
+            picnicFinishCallback = atterrir;
+        }
+    }
+    
+	var deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee, atterrir);
 	
 
 
