@@ -178,8 +178,6 @@
 		background-color:lightblue;
 	}
 </style>
-<link rel="stylesheet" type="text/css" href="lib/dragula.css"></link>
-<script type="text/javascript" src="lib/dragula.js"></script>
 </head>
 <body>
 
@@ -220,7 +218,7 @@
     
     function voyagerTemps(pas)
     {
-        deplacements.destroy();
+        //deplacements.destroy();
         
         console.log("avant " + jourCalendrier.getDate());
         jourCalendrier.setDate(jourCalendrier.getDate()+pas);
@@ -229,7 +227,9 @@
         console.log("fin " + jourCalendrier.getDate());
         
         //alert(listeCiblesJour);
-        deplacements = dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
+        //deplacements = dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
+        deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee, atterrir);
+
 
     }
     
@@ -314,8 +314,8 @@
 			var tache = listeTaches[position];
 			if(tache.innerHTML == obj.innerHTML) objEnDestruction = tache;
 		}
+		if(objEnDestruction) if(tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML]) delete tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML];
 		if(plan.contains(objEnDestruction))plan.removeChild(objEnDestruction);
-		if(tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML]) delete tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML];
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
 	function enregistrerDetail(obj)
