@@ -50,7 +50,9 @@
     }    
     #tableau-des-taches .liste-taches
     {
-    
+        color:white;
+        font-size:30px;
+        font-family:Verdana;
         list-style-type:none;
         background-color:orange;
         float:left;
@@ -63,6 +65,7 @@
     {
     
         background-color:white;
+        font-size:20px;
         margin-bottom:5px;
         padding:4px;
         border-radius:10px;
@@ -131,7 +134,8 @@
 	}
 	#calendrier .jour
 	{
-		display:inline-block;
+		display:block;
+		float:left;
 		width:9rem;
 		height:20rem;
 		background-color:#ccffcc;
@@ -213,6 +217,7 @@
 	</div>
         
     <script type="text/javascript">
+    console.log(localStorage.getItem("calendrier"));
     
     var jourCalendrier = new Date();
     
@@ -287,13 +292,24 @@
         return vueDeListe + actionAjouter;
     }
         
-	function atterrirDansListe(obj)
+	function atterrirDansListe(obj, cible)
 	{
+        console.log("atterrirDansListe()");
         var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
         localStorage.setItem("taches", JSON.stringify(exporterListes())); // TODO optimiser 		
 	}
+	function resterDansListe(obj, liste)
+	{
+        console.log("resterDansListe()");
+        //var li = document.createElement('li');
+        //li.innerHTML = obj.innerHTML;
+        //li.addEventListener('click', function(){appliquerGestures(this)}, false);
+		//liste.appendChild(li);        
+		liste.appendChild(obj);
+	}
 	function quitterUneListe(obj, liste)
 	{
+        console.log("quitterUneListe()");
 		var objEnDestruction = null;
 		var listeTaches = liste.getElementsByTagName('li');
 		for(var position = 0; position < listeTaches.length; position++)
@@ -307,6 +323,7 @@
 	}
 	function quitterUneJournee(obj, plan)
 	{
+        console.log("quitterUneJournee()");
 		var objEnDestruction = null;
 		var listeTaches = plan.getElementsByTagName('li');
 		for(var position = 0; position < listeTaches.length; position++)
@@ -329,12 +346,23 @@
         obj.onclick = function() {enregistrerDetail(this)};
         obj.getElementsByTagName('input')[0].focus();
 	}
-	function atterrirDansJournee(obj)
+	function atterrirDansJournee(obj, cible)
 	{
+        console.log("atterrirDansJournee()");
         //var calendrierPlan = JSON.parse(localStorage.getItem("calendrier"));
 		//alert(JSON.stringify(exporterCalendrier());
-		obj.addEventListener('click', function(){appliquerGestures(this)}, false);
-		obj.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetail(this)">&nbsp;</span>';
+		var testTache = obj.childNodes[0];
+		if(testTache.className && testTache.className.indexOf('tache') == 0)
+		{
+            
+		}
+		else
+		{
+		    var clone = document.createElement('li');
+            clone.addEventListener('click', function(){appliquerGestures(this)}, false);
+            clone.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetail(this)">&nbsp;</span>';
+            cible.appendChild(clone);
+        }
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
 	
@@ -345,26 +373,37 @@
         
     function atterrir(obj, cible, origine)
     {
+        console.log("atterrir()");
         if(!cible) return false;
 		console.log('DRAG & DROP == DEBUT ==');
-		console.log('origine : ' + origine + ':' + origine.id + ':' + origine.className);
-		console.log('obj : ' + obj + ':' + obj.id + ':' + obj.className);
-		console.log('cible : ' + cible + ':' + cible.id + ':' + cible.className);
+		console.log('origine : ' + origine + ':' + origine.id + ':' + origine.className + ' ' + origine.innerHTML);
+		console.log('obj : ' + obj + ':' + obj.id + ':' + obj.className + ' ' + obj.innerHTML);
+		console.log('cible : ' + cible + ':' + cible.id + ':' + cible.className + ' ' + cible.innerHTML);
 		console.log('DRAG & DROP == FIN ==');
 		
-		if(origine.className.indexOf('plan') != -1)
+		if(origine.className.indexOf('plan') != -1 && cible.className.indexOf('plan') != -1)
+		{
+			quitterUneJournee(obj, origine);
+			atterrirDansJournee(obj, cible);
+		}
+		else if(origine.className.indexOf('plan') != -1)
 		{
 			quitterUneJournee(obj, origine);
 			fusionnerDansListe(obj, cible);
 		}
+		else if(origine.className.indexOf('liste-taches') != -1 && cible.className.indexOf('plan') != -1)
+		{
+			resterDansListe(obj, origine);
+			atterrirDansJournee(obj, cible);
+		}
 		else if(cible.className.indexOf('liste-taches') != -1)
 		{
 			quitterUneListe(obj, origine);
-			atterrirDansListe(obj);
+			atterrirDansListe(obj, cible);
 		}
 		else if(cible.className.indexOf('plan') != -1)
 		{
-			atterrirDansJournee(obj);
+			atterrirDansJournee(obj, cible);
 		}
     }
         
