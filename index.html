@@ -160,7 +160,7 @@
 	{
 		background-color:#333333;
 		width:9rem;
-		min-height:10rem;
+		min-height:20rem;
 		padding-top:0.5rem;
 		padding-bottom:0.5rem;
 	}
@@ -233,7 +233,7 @@
         
         //alert(listeCiblesJour);
         //deplacements = dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
-        deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee, atterrir);
+        deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), /*optionsDeJournee,*/ atterrir);
 
 
     }
@@ -361,6 +361,7 @@
 		    var clone = document.createElement('li');
             clone.addEventListener('click', function(){appliquerGestures(this)}, false);
             clone.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetail(this)">&nbsp;</span>';
+            picnicJoin(clone);
             cible.appendChild(clone);
         }
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
@@ -484,7 +485,7 @@
     var actionAjouter = '<li class="action" onClick="ajouterTache(this.parentNode)">+</li>';
     function afficherTableauTaches()
     {
-        var tachesParDefaut = {"exercer":["natation","danse","film"],"etudier":["internet","herboristerille","survie","irlandais"],"creer":["formation","page web","arbre"],"construire":["menage","reno","produit"]};
+        var tachesParDefaut = {"exercer":["natation","danse","film"],"etudier":["internet","herboristerie","survie","irlandais"],"creer":["formation","page web","arbre"],"construire":["menage","reno","produit"]};
         var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));	
         var tableauTaches = tachesParDefaut;
         if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
@@ -560,6 +561,7 @@
     
     afficherCalendrier();
     
+    /*
     var optionsDeJournee = {
         direction: 'vertical',
         copy: true, copySortSource: false,
@@ -570,7 +572,7 @@
         {
             return sibling === null || obj.className.indexOf("action") == -1  || true;
         }
-    };
+    };*/
     
     
     
@@ -599,7 +601,7 @@
         picnicFinishCallback(traveler, cible, origine);
     }
     
-    function picnic(listeZones, options, atterrir)
+    function picnic(listeZones, atterrir)
     {
         for(positionZone = 0; positionZone < listeZones.length; positionZone++)
         {
@@ -617,9 +619,14 @@
         }
     }
     
-	var deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee, atterrir);
+    function picnicJoin(objet)
+    {
+          objet.draggable = true;
+          objet.ondragstart = picnicStart;    
+    }
+    
+	var deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), atterrir);
 	
-
 
     </script>
     
