@@ -388,7 +388,11 @@
 		console.log('cible : ' + cible + ':' + cible.id + ':' + cible.className + ' ' + cible.innerHTML);
 		console.log('DRAG & DROP == FIN ==');
 		
-		if(origine.className.indexOf('plan') != -1 && cible.className.indexOf('plan') != -1)
+		if(obj.className.indexOf('action') != -1)
+		{
+			resterDansListe(obj, origine);
+		}
+		else if(origine.className.indexOf('plan') != -1 && cible.className.indexOf('plan') != -1)
 		{
 			quitterUneJournee(obj, origine);
 			atterrirDansJournee(obj, cible);
