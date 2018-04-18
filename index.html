@@ -181,6 +181,11 @@
 		display:block;
 		background-color:lightblue;
 	}
+	#calendrier .jour .plan li input
+	{
+        width:80px;
+	}
+	
 </style>
 </head>
 <body>
@@ -304,8 +309,9 @@
         //var li = document.createElement('li');
         //li.innerHTML = obj.innerHTML;
         //li.addEventListener('click', function(){appliquerGestures(this)}, false);
-		//liste.appendChild(li);        
-		liste.appendChild(obj);
+		//liste.appendChild(li);
+		action = liste.querySelector(".action");
+		liste.insertBefore(obj, action);
 	}
 	function quitterUneListe(obj, liste)
 	{
@@ -319,7 +325,7 @@
 		}
 		//alert(objEnDestruction);
 		liste.removeChild(objEnDestruction);
-		delete tableauTaches[liste.id][tache.innerHTML];
+		//delete tableauTaches[liste.id][tache.innerHTML];
 	}
 	function quitterUneJournee(obj, plan)
 	{
