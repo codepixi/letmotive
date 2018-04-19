@@ -57,7 +57,7 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
     
     <div id="tableau-des-taches">
     
-        <div id="sauve-tache" onclick="sauvegarderTaches()"><span>Sauvegarde</span></div>
+        <a id="sauve-tache"><span>Sauvegarde</span></a>
     
         <div id="taches">
         
@@ -66,7 +66,7 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
         
         <div id="poubelle-tache"><span>Poubelle</span></div>
 
-        <div id="formulaire-nouvelle-tache" style="display:none;"><form method="post" onsubmit="return enregistrerTache()">
+        <div id="formulaire-nouvelle-tache" style="display:none;"><form method="post" onsubmit="return enregistrerTaches()">
         
         <div>
             <label for="nouvelle-tache-nom">Nom de la tache</label>
@@ -166,6 +166,7 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
         
         var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
         localStorage.setItem("taches", JSON.stringify(exporterTaches())); // TODO optimiser
+        preparerSauvegardeTaches();
         
         cible.removeChild(obj);
         action = cible.querySelector(".action");
@@ -246,7 +247,8 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
 	{
         console.log("atterrirDansPoubelle(obj)");
         cible.removeChild(obj);
-        localStorage.setItem("taches", JSON.stringify(exporterTaches())); // TODO optimiser 		            
+        localStorage.setItem("taches", JSON.stringify(exporterTaches())); // TODO optimiser 
+        preparerSauvegardeTaches();
     }
 	
 	function fusionnerDansListe(obj, liste)
@@ -324,18 +326,23 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
 		return calendrierPlan;
 	}
 		
-	function sauvegarderTaches()
+
+	function preparerSauvegardeTaches()
 	{
-        //lesTaches = JSON.parse(localStorage.getItem("taches"));
+        console.log("preparerSauvegardeTaches()");
+        //lien = document.createElement('a');
         json = localStorage.getItem("taches");
         //alert(json);
-        lien = document.createElement('a');
-        lien.appendChild(document.createTextNode('Telecharger'));
+        lien = document.querySelector("#sauve-tache");
+        //lien.appendChild(document.createTextNode('Telecharger'));
         lien.setAttribute('href', 'data:text/json;base64,' + window.btoa(json));
         //lien.setAttribute('href', 'data:text/json;charset=utf-8,content_encoded_as_url');
-        lien.setAttribute('download','taches.json');
-        document.querySelector("#sauve-tache").appendChild(lien);
-        document.querySelector("#sauve-tache").onclick = null;
+        lien.setAttribute('download','taches.json');	
+	}
+		
+		
+	function sauvegarderTaches()
+	{
 	}
 		
     function exporterTaches()
@@ -372,8 +379,9 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
 		document.getElementById("nouvelle-tache-nom").focus();
         listeEnEdition = liste;
     }
-    function enregistrerTache()
+    function enregistrerTaches()
     {
+        console.log("enregistrerTaches()");
         var boite = document.querySelector("#formulaire-nouvelle-tache");
         boite.style.display = "none";
         lesTaches = JSON.parse(localStorage.getItem("taches"));
@@ -381,7 +389,9 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
         //alert(lesTaches[listeEnEdition.id]);
         listeEnEdition.innerHTML = ecrireListe(lesTaches[listeEnEdition.id]);
         localStorage.setItem("taches", JSON.stringify(lesTaches));
+        preparerSauvegardeTaches();
         document.querySelector("#nouvelle-tache-nom").value = "";
+        
         return false;
     }
         
@@ -398,6 +408,7 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
         else
         {
             localStorage.setItem("taches", JSON.stringify(tachesParDefaut));
+            preparerSauvegardeTaches();
         }
                     
         var vueDuTableau = document.querySelector('#taches');
@@ -480,7 +491,7 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
     
     var deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), atterrir);
     picnicHost(document.querySelector("#poubelle-tache"));
-
+    preparerSauvegardeTaches();
     </script>
     
 </body>
