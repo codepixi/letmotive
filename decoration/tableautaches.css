@@ -66,17 +66,36 @@
     #poubelle-tache span
     {
         display:none;
-    }    
+    }
+    #actions-taches
+    {
+        float:left;
+        margin-top:20px;        
+        width:100px;
+    }
     #sauve-tache
     {
-        margin-top:20px;
-        float:left;
+        position:relative;
+        display:block;
         width:100px;
         height:100px;
         background-image:url(action-sauvegarder.png);
         cursor:pointer;
     }
     #sauve-tache span
+    {
+        display:none;
+    }    
+    #importe-tache
+    {
+        position:relative;
+        display:block;
+        width:100px;
+        height:100px;
+        background-image:url(action-importer.png);
+        cursor:pointer;
+    }
+    #importe-tache span
     {
         display:none;
     }    

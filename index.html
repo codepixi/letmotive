@@ -5,6 +5,8 @@
 Credit : 
 https://commons.wikimedia.org/wiki/File:Human-user-trash-full.svg
 https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
+https://pixabay.com/en/book-orange-thick-blank-art-cover-311431/
+https://pixabay.com/en/books-pile-orange-close-library-310520/
 -->
 <style>
 
@@ -57,8 +59,11 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
     
     <div id="tableau-des-taches">
     
-        <a id="sauve-tache"><span>Sauvegarde</span></a>
-    
+        <div id="actions-taches">
+            <a id="sauve-tache"><span>Sauvegarde</span></a>
+            <a id="importe-tache" href="javascript:permettreImportDesTaches()"><span><input type="file" accept=".json" name="importeTaches"/></span></a>
+        </div>
+        
         <div id="taches">
         
 
@@ -339,8 +344,52 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
         //lien.setAttribute('href', 'data:text/json;charset=utf-8,content_encoded_as_url');
         lien.setAttribute('download','taches.json');	
 	}
+	
+    function verifierTeleversement() 
+    {
+        return (window.File && window.FileReader && window.FileList && window.Blob);
+    }	
+	
+    function importerLesTaches(evenement)
+    {
+        console.log("importerLesTaches(evenement)");
+        if (!verifierTeleversement()) alert('Televersement impossible');
+        //alert(evenement.target.files.length);
+        fichier = evenement.target.files[0];
+        //fichier = document.querySelector("#importe-tache span input[type=file]").files[0];
+        //alert(fichier.name);
+        lecteur = new FileReader();
+        //alert("lecteur=" + lecteur);
+        //lecteur.onload = (function(fichier) { return function(chargement) 
+        lecteur.addEventListener("load", function (evenement) 
+        {
+            console.log("lecteur.onload()");
+            json = this.result;
+            //alert(json);
+            tableauTaches = JSON.parse(json);
+            afficherTableauAvecTaches(tableauTaches);
+            //localStorage.setItem("taches", JSON.stringify(exporterTaches()));
+            localStorage.setItem("taches", JSON.stringify(tableauTaches));
+        });
+        lecteur.readAsText(fichier); 
+        //lecteur.readAsDataURL(fichier); 
+        interdireImportDesTaches();
+    }
 		
-		
+    function permettreImportDesTaches()
+    {
+        console.log("permettreImportDesTaches()");
+        document.querySelector("#importe-tache span").style.display = "block";
+        document.querySelector("#importe-tache span input[type=file]").onchange = importerLesTaches;
+    }
+    
+    function interdireImportDesTaches()
+    {
+        console.log("interdireImportDesTaches()");
+        document.querySelector("#importe-tache span").style.display = "none";
+        // document.querySelector("#importe-tache span input[type=file]")
+    }
+    
 	function sauvegarderTaches()
 	{
 	}
@@ -396,11 +445,22 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
     }
         
     var actionAjouter = '<li class="action" onClick="ajouterTache(this.parentNode)">+</li>';
+    var tableauTaches;
+    function afficherTableauAvecTaches(tableauTaches)
+    {
+        var vueDuTableau = document.querySelector('#taches');
+        vueDuTableau.innerHTML = "";
+        for(nomListe in tableauTaches)
+        {
+            var listeTaches = tableauTaches[nomListe];        
+            vueDuTableau.innerHTML += '<ul id="'+ nomListe+'" class="liste-taches" title="'+nomListe+'">'+ecrireListe(listeTaches) + '</ul>';
+        }        
+    }
     function afficherTableauTaches()
     {
         var tachesParDefaut = {"exercer":["natation","danse","film"],"etudier":["internet","herboristerie","survie","irlandais"],"creer":["formation","page web","arbre"],"construire":["menage","reno","produit"]};
         var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));	
-        var tableauTaches = tachesParDefaut;
+        tableauTaches = tachesParDefaut;
         if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
         {
             tableauTaches = tachesEnregistrees;
@@ -410,15 +470,9 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
             localStorage.setItem("taches", JSON.stringify(tachesParDefaut));
             preparerSauvegardeTaches();
         }
-                    
-        var vueDuTableau = document.querySelector('#taches');
-        for(nomListe in tableauTaches)
-        {
-            var listeTaches = tableauTaches[nomListe];        
-            vueDuTableau.innerHTML += '<ul id="'+ nomListe+'" class="liste-taches" title="'+nomListe+'">'+ecrireListe(listeTaches) + '</ul>';
-        }
-
+        afficherTableauAvecTaches(tableauTaches); 
     }
+    
     afficherTableauTaches();
     
 		
