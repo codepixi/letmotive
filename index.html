@@ -57,7 +57,7 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
     
     <div id="tableau-des-taches">
     
-        <div id="sauve-tache"><span>Sauvegarde</span></div>
+        <div id="sauve-tache" onclick="sauvegarderTaches()"><span>Sauvegarde</span></div>
     
         <div id="taches">
         
@@ -165,7 +165,7 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
         console.log("atterrirDansListe()");
         
         var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
-        localStorage.setItem("taches", JSON.stringify(exporterListes())); // TODO optimiser
+        localStorage.setItem("taches", JSON.stringify(exporterTaches())); // TODO optimiser
         
         cible.removeChild(obj);
         action = cible.querySelector(".action");
@@ -246,7 +246,7 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
 	{
         console.log("atterrirDansPoubelle(obj)");
         cible.removeChild(obj);
-        localStorage.setItem("taches", JSON.stringify(exporterListes())); // TODO optimiser 		            
+        localStorage.setItem("taches", JSON.stringify(exporterTaches())); // TODO optimiser 		            
     }
 	
 	function fusionnerDansListe(obj, liste)
@@ -324,7 +324,21 @@ https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
 		return calendrierPlan;
 	}
 		
-    function exporterListes()
+	function sauvegarderTaches()
+	{
+        //lesTaches = JSON.parse(localStorage.getItem("taches"));
+        json = localStorage.getItem("taches");
+        //alert(json);
+        lien = document.createElement('a');
+        lien.appendChild(document.createTextNode('Telecharger'));
+        lien.setAttribute('href', 'data:text/json;base64,' + window.btoa(json));
+        //lien.setAttribute('href', 'data:text/json;charset=utf-8,content_encoded_as_url');
+        lien.setAttribute('download','taches.json');
+        document.querySelector("#sauve-tache").appendChild(lien);
+        document.querySelector("#sauve-tache").onclick = null;
+	}
+		
+    function exporterTaches()
     {
         var donnees = {};
         donnees["exercer"] = lireListe("exercer");
