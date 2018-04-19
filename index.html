@@ -160,9 +160,14 @@ https://commons.wikimedia.org/wiki/File:Human-user-trash-full.svg
 	function atterrirDansListe(obj, cible)
 	{
         console.log("atterrirDansListe()");
-    
+        
         var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
         localStorage.setItem("taches", JSON.stringify(exporterListes())); // TODO optimiser
+        
+        cible.removeChild(obj);
+        action = cible.querySelector(".action");
+		cible.insertBefore(obj, action);
+
 	}
 	function resterDansListe(obj, liste)
 	{
@@ -281,7 +286,7 @@ https://commons.wikimedia.org/wiki/File:Human-user-trash-full.svg
 		}
 		else if(cible.className.indexOf('liste-taches') != -1)
 		{
-			quitterUneListe(obj, origine);
+			//quitterUneListe(obj, origine);
 			atterrirDansListe(obj, cible);
 		}
 		else if(cible.className.indexOf('plan') != -1)
