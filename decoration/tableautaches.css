@@ -1,0 +1,70 @@
+    #tableau-des-taches
+    {
+        clear:both;
+		text-align: center;
+		display:flex;
+		justify-content:center;
+		background-color:#cccccc;
+    }
+    #tableau-des-taches ul[title]::before 
+    {
+        text-transform:capitalize;
+        content: attr(title);
+        display: block;
+        font-weight: bold;
+        padding: 4px;
+    }    
+    #tableau-des-taches .liste-taches
+    {
+        color:white;
+        font-size:30px;
+        font-family:Verdana;
+        list-style-type:none;
+        background-color:orange;
+        float:left;
+        width:230px;
+        margin:10px;
+        padding:10px 10px 5px 10px;
+    
+    }
+    #tableau-des-taches .liste-taches *
+    {
+    
+        background-color:white;
+        font-size:20px;
+        margin-bottom:5px;
+        padding:4px;
+        border-radius:10px;
+        height:30px;
+        text-align:center;
+        line-height:30px;
+        font-weight:bold;
+        color:#333333;
+        cursor:hand;    
+    }
+    #formulaire-nouvelle-tache 
+    {
+        background-color:#beedbb;
+        border-radius:1.5em;
+        padding:1em;
+        border:solid 0.2em black;
+		margin-top:1em;
+		width:12em;
+		margin-left:-6em;
+		left:50%;
+		
+    }
+    #formulaire-nouvelle-tache form div
+    {
+        padding:5px;
+    }
+    #formulaire-nouvelle-tache form div label
+    {
+        display:block;
+		font-weight:bold;
+		color:#333333;
+    }
+    #formulaire-nouvelle-tache form div input
+    {
+        width:100%;
+    }
