@@ -67,6 +67,19 @@
     {
         display:none;
     }    
+    #sauve-tache
+    {
+        margin-top:20px;
+        float:left;
+        width:100px;
+        height:100px;
+        background-image:url(action-sauvegarder.png);
+        cursor:pointer;
+    }
+    #sauve-tache span
+    {
+        display:none;
+    }    
     #formulaire-nouvelle-tache form div
     {
         padding:5px;
