@@ -4,7 +4,7 @@
 
 Credit : 
 https://commons.wikimedia.org/wiki/File:Human-user-trash-full.svg
-
+https://commons.wikimedia.org/wiki/File:Toicon-icon-isometric-save.svg
 -->
 <style>
 
@@ -121,14 +121,14 @@ https://commons.wikimedia.org/wiki/File:Human-user-trash-full.svg
         
 	function cliquerSimple(obj)
     {
-        console.log('simple clic');
-        console.log('obj ' + obj + ' ' + obj.className);
-        if(obj.className.indexOf("termine") == -1) obj.classList.add("termine");
-        else  obj.classList.remove("termine");
+        console.log('cliquerSimple(obj)');
+        //console.log('obj ' + obj + ' ' + obj.className);
+        //if(obj.className.indexOf("termine") == -1) obj.classList.add("termine");
+        //else obj.classList.remove("termine");
     }
     function cliquerDouble(obj)
     {
-        console.log('double clic');
+        console.log('cliquerDouble(obj)');
     }
 	var decompte = 0;
 	function appliquerGestures(obj) 
@@ -207,15 +207,15 @@ https://commons.wikimedia.org/wiki/File:Human-user-trash-full.svg
 		if(plan.contains(objEnDestruction))plan.removeChild(objEnDestruction);
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
-	function enregistrerDetail(obj)
+	function enregistrerDetailTache(obj)
 	{
         obj.parentNode.innerHTML = obj.getElementsByTagName('input')[0].value;
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
-	function editerDetail(obj)
+	function editerDetailTache(obj)
 	{
         obj.innerHTML = '<form onsubmit="enregistrerDetail(this); return false;"><input type="text" value="'+obj.innerHTML+'"></form>';
-        obj.onclick = function() {enregistrerDetail(this)};
+        obj.onclick = function() {enregistrerDetailTache(this.querySelector("form"))};
         obj.getElementsByTagName('input')[0].focus();
 	}
 	function atterrirDansJournee(obj, cible)
@@ -232,7 +232,7 @@ https://commons.wikimedia.org/wiki/File:Human-user-trash-full.svg
 		{
 		    var clone = document.createElement('li');
             clone.addEventListener('click', function(){appliquerGestures(this)}, false);
-            clone.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetail(this)">&nbsp;</span>';
+            clone.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetailTache(this)">&nbsp;</span>';
             picnicJoin(clone);
             cible.appendChild(clone);
         }
@@ -436,7 +436,7 @@ https://commons.wikimedia.org/wiki/File:Human-user-trash-full.svg
                 console.log(JSON.stringify(descriptionTache));
                 var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
                 if(!descriptionTache['detail']) descriptionTache['detail'] = '';
-                planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache['nom']+'</span><span class="detail" onclick="editerDetail(this)">'+descriptionTache['detail']+'</span></li>';
+                planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache['nom']+'</span><span class="detail" onclick="editerDetailTache(this)">'+descriptionTache['detail']+'</span></li>';
             }
             
             autreJour.appendChild(planDeJournee);
