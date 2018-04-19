@@ -1,6 +1,11 @@
 <html>
 <head>
+<!--
 
+Credit : 
+https://commons.wikimedia.org/wiki/File:Human-user-trash-full.svg
+
+-->
 <style>
 
     *
@@ -49,19 +54,24 @@
             
     </div>
 
+    
     <div id="tableau-des-taches">
-    
-
-    </div>
-
-    <div id="formulaire-nouvelle-tache" style="display:none;"><form method="post" onsubmit="return enregistrerTache()">
-    
-    <div>
-        <label for="nouvelle-tache-nom">Nom de la tache</label>
-        <input type="text" name="nom" id="nouvelle-tache-nom"/>
-    </div>
+        <div id="taches">
         
-    </form></div>
+
+        </div>
+        
+        <div id="poubelle-tache"><span>Poubelle</span></div>
+
+        <div id="formulaire-nouvelle-tache" style="display:none;"><form method="post" onsubmit="return enregistrerTache()">
+        
+        <div>
+            <label for="nouvelle-tache-nom">Nom de la tache</label>
+            <input type="text" name="nom" id="nouvelle-tache-nom"/>
+        </div>
+            
+        </form></div>
+    </div>
 	
 	<div id="calendrier">
         <a class="action-voyager-temps" href="javascript:voyagerTemps(-1)">&lt;&lt;</a>
@@ -150,8 +160,9 @@
 	function atterrirDansListe(obj, cible)
 	{
         console.log("atterrirDansListe()");
+    
         var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));
-        localStorage.setItem("taches", JSON.stringify(exporterListes())); // TODO optimiser 		
+        localStorage.setItem("taches", JSON.stringify(exporterListes())); // TODO optimiser
 	}
 	function resterDansListe(obj, liste)
 	{
@@ -223,6 +234,13 @@
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
 	}
 	
+	function atterrirDansPoubelle(obj)
+	{
+        console.log("atterrirDansPoubelle(obj)");
+        cible.removeChild(obj);
+        localStorage.setItem("taches", JSON.stringify(exporterListes())); // TODO optimiser 		            
+    }
+	
 	function fusionnerDansListe(obj, liste)
 	{
 		if(liste.contains(obj)) liste.removeChild(obj);
@@ -238,7 +256,11 @@
 		console.log('cible : ' + cible + ':' + cible.id + ':' + cible.className + ' ' + cible.innerHTML);
 		console.log('DRAG & DROP == FIN ==');
 		
-		if(obj.className.indexOf('action') != -1)
+		if(cible.id == "poubelle-tache" && origine.className.indexOf('liste-taches') != -1)
+		{
+            atterrirDansPoubelle(obj);
+		}
+		else if(obj.className.indexOf('action') != -1)
 		{
 			resterDansListe(obj, origine);
 		}
@@ -267,8 +289,7 @@
 			atterrirDansJournee(obj, cible);
 		}
     }
-        
-
+    
 	function exporterCalendrier()
 	{
 		var calendrierPlan = {};
@@ -357,7 +378,7 @@
             localStorage.setItem("taches", JSON.stringify(tachesParDefaut));
         }
                     
-        var vueDuTableau = document.querySelector('#tableau-des-taches');
+        var vueDuTableau = document.querySelector('#taches');
         for(nomListe in tableauTaches)
         {
             var listeTaches = tableauTaches[nomListe];        
@@ -436,8 +457,7 @@
     
     
     var deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), atterrir);
-
-	
+    picnicHost(document.querySelector("#poubelle-tache"));
 
     </script>
     
