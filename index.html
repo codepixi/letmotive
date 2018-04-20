@@ -220,6 +220,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 		if(objEnDestruction) if(tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML]) delete tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML];
 		if(plan.contains(objEnDestruction))plan.removeChild(objEnDestruction);
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
+        preparerSauvegardeCalendrier();
 	}
 	function enregistrerDetailTache(obj)
 	{
@@ -227,6 +228,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         obj.parentNode.onclick = function (){editerDetailTache(this)};
         obj.parentNode.innerHTML = obj.getElementsByTagName('input')[0].value;
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 
+        preparerSauvegardeCalendrier();
 	}
 	function editerDetailTache(obj)
 	{
@@ -336,10 +338,24 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 				//calendrierPlan[jour.id][calendrierPlan[jour.id].length]['detail'] = choix.parentNode.getElementsByClassName('detail')[0].innerHTML;
 			}
 		}
+		
 		return calendrierPlan;
 	}
 		
 
+	function preparerSauvegardeCalendrier()
+	{
+        console.log("preparerSauvegardeCalendrier()");
+        //lien = document.createElement('a');
+        json = localStorage.getItem("calendrier");
+        //alert(json);
+        lien = document.querySelector("#sauve-calendrier");
+        //lien.appendChild(document.createTextNode('Telecharger'));
+        lien.setAttribute('href', 'data:text/json;base64,' + window.btoa(json));
+        //lien.setAttribute('href', 'data:text/json;charset=utf-8,content_encoded_as_url');
+        lien.setAttribute('download','calendrier.json');
+	}
+	
 	function preparerSauvegardeTaches()
 	{
         console.log("preparerSauvegardeTaches()");
@@ -378,6 +394,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
             afficherCalendrier();
             //localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier()));
             localStorage.setItem("calendrier", JSON.stringify(tableauCalendrier));
+            preparerSauvegardeCalendrier();
         });
         lecteur.readAsText(fichier); 
         //lecteur.readAsDataURL(fichier); 
@@ -543,6 +560,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         {
             localStorage.setItem("calendrier", JSON.stringify(calendrierParDefaut));
         }
+        preparerSauvegardeCalendrier();
         //alert(JSON.stringify(tableauCalendrier));
 
         var vueCalendrier = document.getElementById("calendrier-jours");
