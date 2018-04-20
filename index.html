@@ -357,7 +357,34 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
     {
         return (window.File && window.FileReader && window.FileList && window.Blob);
     }	
-	
+
+    function importerLeCalendrier(evenement)
+    {
+        console.log("importerLeCalendrier(evenement)");
+        if (!verifierTeleversement()) alert('Televersement impossible');
+        //alert(evenement.target.files.length);
+        fichier = evenement.target.files[0];
+        //fichier = document.querySelector("#importe-calendrier span input[type=file]").files[0];
+        //alert(fichier.name);
+        lecteur = new FileReader();
+        //alert("lecteur=" + lecteur);
+        //lecteur.onload = (function(fichier) { return function(chargement) 
+        lecteur.addEventListener("load", function (evenement) 
+        {
+            console.log("lecteur.onload()");
+            json = this.result;
+            //alert(json);
+            tableauCalendrier = JSON.parse(json);
+            afficherCalendrier();
+            //localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier()));
+            localStorage.setItem("calendrier", JSON.stringify(tableauCalendrier));
+        });
+        lecteur.readAsText(fichier); 
+        //lecteur.readAsDataURL(fichier); 
+        interdireImportDuCalendrier();
+    }
+    
+    
     function importerLesTaches(evenement)
     {
         console.log("importerLesTaches(evenement)");
