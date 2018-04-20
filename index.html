@@ -40,8 +40,8 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
     }
 </style>
 
-<link rel="stylesheet" type="text/css" href="decoration/tableautaches.css"/>
-<link rel="stylesheet" type="text/css" href="decoration/calendrier.css"/>
+<link rel="stylesheet" type="text/css" href="decoration/tableautaches/tableautaches.css"/>
+<link rel="stylesheet" type="text/css" href="decoration/calendrier/calendrier.css"/>
 <script type="text/javascript" src="lib/picnic.js"></script>
 
 </head>
@@ -52,8 +52,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
                 <a id="action-tableau-des-taches-fermer" href="javascript:fermerTableauTaches()">X</a>
                 <a id="action-tableau-des-taches-ouvrir" href="javascript:ouvrirTableauTaches()" style="display:none;">A</a>
                 Tableau des tâches possibles 
-            </div>
-            
+            </div>            
     </div>
 
     
@@ -82,6 +81,12 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
     </div>
 	
 	<div id="calendrier">
+	
+        <div id="actions-calendrier">
+            <a id="sauve-calendrier"><span>Sauvegarde</span></a>
+            <a id="importe-calendrier" href="javascript:permettreImportDuCalendrier()"><span><input type="file" accept=".json" name="importeCalendrier"/></span></a>
+        </div>	
+	
         <a class="action-voyager-temps" href="javascript:voyagerTemps(-1)">&lt;&lt;</a>
         <div id="calendrier-jours">
         
@@ -378,7 +383,21 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         //lecteur.readAsDataURL(fichier); 
         interdireImportDesTaches();
     }
-		
+    
+    function permettreImportDuCalendrier()
+    {
+        console.log("permettreImportDuCalendrier()");
+        document.querySelector("#importe-calendrier span").style.display = "block";
+        document.querySelector("#importe-calendrier span input[type=file]").onchange = importerLeCalendrier;
+    }
+    
+    function interdireImportDuCalendrier()
+    {
+        console.log("interdireImportDuCalendrier()");
+        document.querySelector("#importe-calendrier span").style.display = "none";
+        // document.querySelector("#importe-calendrier span input[type=file]")
+    }
+    
     function permettreImportDesTaches()
     {
         console.log("permettreImportDesTaches()");
