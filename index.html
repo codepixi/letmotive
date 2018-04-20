@@ -391,9 +391,9 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
             json = this.result;
             //alert(json);
             tableauCalendrier = JSON.parse(json);
-            afficherCalendrier();
             //localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier()));
             localStorage.setItem("calendrier", JSON.stringify(tableauCalendrier));
+            afficherCalendrier();
             preparerSauvegardeCalendrier();
         });
         lecteur.readAsText(fichier); 
