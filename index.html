@@ -218,13 +218,16 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 	}
 	function enregistrerDetailTache(obj)
 	{
+        //alert(obj);
+        obj.parentNode.onclick = function (){editerDetailTache(this)};
         obj.parentNode.innerHTML = obj.getElementsByTagName('input')[0].value;
-        localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
+        localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 
 	}
 	function editerDetailTache(obj)
 	{
-        obj.innerHTML = '<form onsubmit="enregistrerDetail(this); return false;"><input type="text" value="'+obj.innerHTML+'"></form>';
-        obj.onclick = function() {enregistrerDetailTache(this.querySelector("form"))};
+        //alert(obj.onclick);
+        obj.innerHTML = '<form onsubmit="enregistrerDetailTache(this); return false;"><input type="text" value="'+obj.innerHTML+'"></form>';
+        obj.onclick = {function() {enregistrerDetailTache(this.querySelector("form"))}};
         obj.getElementsByTagName('input')[0].focus();
 	}
 	function atterrirDansJournee(obj, cible)
@@ -240,7 +243,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 		else
 		{
 		    var clone = document.createElement('li');
-            clone.addEventListener('click', function(){appliquerGestures(this)}, false);
+            //clone.addEventListener('click', function(){appliquerGestures(this)}, false);
             clone.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetailTache(this)">&nbsp;</span>';
             picnicJoin(clone);
             cible.appendChild(clone);
@@ -518,7 +521,8 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
                 console.log(JSON.stringify(descriptionTache));
                 var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
                 if(!descriptionTache['detail']) descriptionTache['detail'] = '';
-                planDeJournee.innerHTML += '<li onclick="appliquerGestures(this)"><span class="tache">'+descriptionTache['nom']+'</span><span class="detail" onclick="editerDetailTache(this)">'+descriptionTache['detail']+'</span></li>';
+                planDeJournee.innerHTML += '<li><span class="tache">'+descriptionTache['nom']+'</span><span class="detail" onclick="editerDetailTache(this)">'+descriptionTache['detail']+'</span></li>';
+                //  onclick="appliquerGestures(this)"
             }
             
             autreJour.appendChild(planDeJournee);
