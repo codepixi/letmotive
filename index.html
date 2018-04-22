@@ -50,6 +50,8 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 <link rel="stylesheet" type="text/css" href="decoration/tableautaches/tableautaches.css"/>
 <link rel="stylesheet" type="text/css" href="decoration/calendrier/calendrier.css"/>
 <script type="text/javascript" src="lib/picnic.js"></script>
+<script type="text/javascript" src="tableautaches.js"></script>
+<script type="text/javascript" src="calendrier.js"></script>
 
 </head>
 <body>
@@ -104,43 +106,11 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 	</div>
         
     <script type="text/javascript">
-    console.log(localStorage.getItem("calendrier"));
-    
-    var jourCalendrier = new Date();
-    
-    function voyagerTemps(pas)
+    function verifierTeleversement() 
     {
-        //deplacements.destroy();
-        
-        console.log("avant " + jourCalendrier.getDate());
-        jourCalendrier.setDate(jourCalendrier.getDate()+pas);
-        console.log("apres " + jourCalendrier.getDate());
-        afficherCalendrier(jourCalendrier);
-        console.log("fin " + jourCalendrier.getDate());
-        
-        //alert(listeCiblesJour);
-        //deplacements = dragula(listeCiblesJour.concat(lesQuatresSortes), optionsDeJournee).on("drop", atterrir);
-        deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), /*optionsDeJournee,*/ atterrir);
-
-
-    }
+        return (window.File && window.FileReader && window.FileList && window.Blob);
+    }	
     
-    function fermerTableauTaches()
-    {
-        var vueDuTableau = document.querySelector('#tableau-des-taches');
-        vueDuTableau.style.display = "none";
-        document.querySelector('#action-tableau-des-taches-fermer').style.display = "none";
-        document.querySelector('#action-tableau-des-taches-ouvrir').style.display = "";
-    }
-
-    function ouvrirTableauTaches()
-    {
-        var vueDuTableau = document.querySelector('#tableau-des-taches');
-        vueDuTableau.style.display = "";
-        document.querySelector('#action-tableau-des-taches-fermer').style.display = "";
-        document.querySelector('#action-tableau-des-taches-ouvrir').style.display = "none";
-    }
-        
 	function cliquerSimple(obj)
     {
         console.log('cliquerSimple(obj)');
@@ -148,10 +118,12 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         //if(obj.className.indexOf("termine") == -1) obj.classList.add("termine");
         //else obj.classList.remove("termine");
     }
+    
     function cliquerDouble(obj)
     {
         console.log('cliquerDouble(obj)');
     }
+    
 	var decompte = 0;
 	function appliquerGestures(obj) 
 	{
@@ -168,18 +140,108 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
             cliquerDouble(obj);
         }
     };
+    </script>
+
     
-    function ecrireListe(listeTaches)
-    {
-        //alert(listeTaches.id);
-        var vueDeListe = '';
-        for(numeroTache in listeTaches)
+    <script type="text/javascript">
+	function verifierListesObligatoires(cible)
+	{
+        //verifications = [false,false,false,false];
+        for(position in listesObligatoires)
         {
-            vueDeListe += '<li>'+listeTaches[numeroTache]+'</li>'
+            listesObligatoires[position] = false;
         }
-        return vueDeListe + actionAjouter;
-    }
+        //console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
+        for(position in cible.childNodes)
+        {
+            contenu = cible.childNodes[position];
+            if(contenu.className) listesObligatoires[contenu.className] = true;
+        }
+        console.log("Listes obligatoires utilisees : " + JSON.stringify(listesObligatoires));
         
+        tous = true;
+        for(position in listesObligatoires)
+        {
+            tous = tous && listesObligatoires[position];
+        }
+        return tous;
+	}
+	
+	function verifierEtatDuJour(jour)
+	{        
+        console.log("verifierEtatDuJour("+jour+")");
+        for(position in listesObligatoires)
+        {
+            listesObligatoires[position] = false;
+        }
+        //console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
+
+        //console.log("calendrier " + localStorage.getItem("calendrier"));
+        calendrier = JSON.parse(localStorage.getItem("calendrier"));
+        for(position in calendrier[jour])
+        {
+            tache = calendrier[jour][position];
+            //console.log("tache.liste " + tache.liste);
+            if(tache.liste) listesObligatoires[tache.liste] = true;
+        }
+        console.log("Listes obligatoires utilisees : " + JSON.stringify(listesObligatoires));
+        
+        nombre = 0;
+        for(position in listesObligatoires)
+        {
+            if(listesObligatoires[position]) nombre++;
+        }
+        switch(nombre) // dependance sur nombre de categoriees == 4
+        {
+            case 0: return 'vide';
+            case 1: case 2: case 3: return 'incomplet';
+            case 4: return 'complet';
+            
+        }
+	}
+
+	function verifierListesManquantes(jour)
+	{
+        //alert(jour + jour);
+        cible = jour.childNodes[1];
+        //alert(cible);
+        
+        for(position in listesObligatoires)
+        {
+            listesObligatoires[position] = false;
+        }
+        //console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
+        
+        for(position in cible.childNodes)
+        {
+            contenu = cible.childNodes[position];
+            if(contenu.className) listesObligatoires[contenu.className] = true;
+        }
+        console.log("Listes obligatoires utilisees : " + JSON.stringify(listesObligatoires));
+        
+        manquantes = [];
+        for(position in listesObligatoires)
+        {
+            if(!listesObligatoires[position]) manquantes[manquantes.length] = position;
+        }
+        return manquantes;
+	}
+	
+	function effacerCompletion()
+	{
+        document.querySelector("#message").innerHTML = "&nbsp;";
+	}
+	
+	function suggererCompletion(jour)
+	{
+        manquantes = verifierListesManquantes(jour);
+        message = (manquantes.length != 0)?"Il vous manque " + JSON.stringify(manquantes) : "&nbsp;";
+        console.log(message);
+        document.querySelector("#message").innerHTML = message;
+	}
+    </script>
+    
+    <script type="text/javascript">
 	function atterrirDansListe(obj, cible)
 	{
         console.log("atterrirDansListe()");
@@ -236,24 +298,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         console.log("la journee est maintenant" + etat);
         plan.className = "plan " + etat;
 	}
-	function enregistrerDetailTache(obj)
-	{
-        //alert(obj);
-        obj.parentNode.onclick = function (){editerDetailTache(this)};
-        obj.parentNode.innerHTML = obj.getElementsByTagName('input')[0].value;
-        localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 
-        preparerSauvegardeCalendrier();
-	}
-	function editerDetailTache(obj)
-	{
-        //alert(obj.onclick);
-        obj.innerHTML = '<form onsubmit="enregistrerDetailTache(this); return false;"><input type="text" value="'+obj.innerHTML+'"></form>';
-        obj.onclick = {function() {enregistrerDetailTache(this.querySelector("form"))}};
-        obj.getElementsByTagName('input')[0].focus();
-	}
-	
-	var listesObligatoires = {'exercer':false,'etudier':false,'creer':false,'construire':false}; // TODO rendre dynamique
-	
+		
 	function atterrirDansJournee(obj, cible)
 	{
         console.log("atterrirDansJournee()");
@@ -273,103 +318,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         if(completion) cible.className = "plan complet";
         else cible.className = "plan incomplet";
 	}
-	    
-	function verifierListesObligatoires(cible)
-	{
-        //verifications = [false,false,false,false];
-        for(position in listesObligatoires)
-        {
-            listesObligatoires[position] = false;
-        }
-        //console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
-        for(position in cible.childNodes)
-        {
-            contenu = cible.childNodes[position];
-            if(contenu.className) listesObligatoires[contenu.className] = true;
-        }
-        console.log("Listes obligatoires utilisees : " + JSON.stringify(listesObligatoires));
-        
-        tous = true;
-        for(position in listesObligatoires)
-        {
-            tous = tous && listesObligatoires[position];
-        }
-        return tous;
-	}
 	
-	function verifierEtatDuJour(jour)
-	{        
-        console.log("verifierEtatDuJour("+jour+")");
-        for(position in listesObligatoires)
-        {
-            listesObligatoires[position] = false;
-        }
-        //console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
-
-        //console.log("calendrier " + localStorage.getItem("calendrier"));
-        calendrier = JSON.parse(localStorage.getItem("calendrier"));
-        for(position in calendrier[jour])
-        {
-            tache = calendrier[jour][position];
-            //console.log("tache.liste " + tache.liste);
-            if(tache.liste) listesObligatoires[tache.liste] = true;
-        }
-        console.log("Listes obligatoires utilisees : " + JSON.stringify(listesObligatoires));
-        
-        nombre = 0;
-        for(position in listesObligatoires)
-        {
-            if(listesObligatoires[position]) nombre++;
-        }
-        switch(nombre) // dependance sur nombre de categoriees == 4
-        {
-            case 0: return 'vide';
-            case 1: case 2: case 3: return 'incomplet';
-            case 4: return 'complet';
-            
-        }
-
-	}
-
-	function verifierListesManquantes(jour)
-	{
-        //alert(jour + jour);
-        cible = jour.childNodes[1];
-        //alert(cible);
-        
-        for(position in listesObligatoires)
-        {
-            listesObligatoires[position] = false;
-        }
-        //console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
-        
-        for(position in cible.childNodes)
-        {
-            contenu = cible.childNodes[position];
-            if(contenu.className) listesObligatoires[contenu.className] = true;
-        }
-        console.log("Listes obligatoires utilisees : " + JSON.stringify(listesObligatoires));
-        
-        manquantes = [];
-        for(position in listesObligatoires)
-        {
-            if(!listesObligatoires[position]) manquantes[manquantes.length] = position;
-        }
-        return manquantes;
-	}
-	
-	function effacerCompletion()
-	{
-        document.querySelector("#message").innerHTML = "&nbsp;";
-	}
-	
-	function suggererCompletion(jour)
-	{
-        manquantes = verifierListesManquantes(jour);
-        message = (manquantes.length != 0)?"Il vous manque " + JSON.stringify(manquantes) : "&nbsp;";
-        console.log(message);
-        document.querySelector("#message").innerHTML = message;
-	}
 	
 	function atterrirDansPoubelle(obj)
 	{
@@ -444,299 +393,11 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 		}		
     }
     
-	function exporterCalendrier()
-	{
-		var calendrierPlan = {};
-		var calendrier = document.getElementById('calendrier');
-		var lesJour = calendrier.getElementsByClassName('jour');
-		for(var positionJour = 0; positionJour < lesJour.length; positionJour++)
-		{
-			var jour = lesJour[positionJour];
-			var lesChoix = jour.getElementsByTagName('li');
-	
-			calendrierPlan[jour.id] = [];
-			
-			for(var positionChoix = 0; positionChoix < lesChoix.length; positionChoix++)
-			{
-				var choix = lesChoix[positionChoix];
-				var plan = {};
-				plan['nom'] = choix.getElementsByClassName('tache')[0].innerHTML;
-				plan['detail'] = choix.getElementsByClassName('detail')[0].innerHTML;
-				plan['liste'] = choix.className;
-				if(!plan['detail']) plan['detail'] = '';
-				calendrierPlan[jour.id][calendrierPlan[jour.id].length] = plan;
-				//calendrierPlan[jour.id][calendrierPlan[jour.id].length]['detail'] = choix.parentNode.getElementsByClassName('detail')[0].innerHTML;
-			}
-		}
-		
-		return calendrierPlan;
-	}
-		
+    </script>
 
-	function preparerSauvegardeCalendrier()
-	{
-        console.log("preparerSauvegardeCalendrier()");
-        //lien = document.createElement('a');
-        json = localStorage.getItem("calendrier");
-        //alert(json);
-        lien = document.querySelector("#sauve-calendrier");
-        //lien.appendChild(document.createTextNode('Telecharger'));
-        lien.setAttribute('href', 'data:text/json;base64,' + window.btoa(json));
-        //lien.setAttribute('href', 'data:text/json;charset=utf-8,content_encoded_as_url');
-        lien.setAttribute('download','calendrier.json');
-	}
-	
-	function preparerSauvegardeTaches()
-	{
-        console.log("preparerSauvegardeTaches()");
-        //lien = document.createElement('a');
-        json = localStorage.getItem("taches");
-        //alert(json);
-        lien = document.querySelector("#sauve-tache");
-        //lien.appendChild(document.createTextNode('Telecharger'));
-        lien.setAttribute('href', 'data:text/json;base64,' + window.btoa(json));
-        //lien.setAttribute('href', 'data:text/json;charset=utf-8,content_encoded_as_url');
-        lien.setAttribute('download','taches.json');	
-	}
-	
-    function verifierTeleversement() 
-    {
-        return (window.File && window.FileReader && window.FileList && window.Blob);
-    }	
-
-    function importerLeCalendrier(evenement)
-    {
-        console.log("importerLeCalendrier(evenement)");
-        if (!verifierTeleversement()) alert('Televersement impossible');
-        //alert(evenement.target.files.length);
-        fichier = evenement.target.files[0];
-        //fichier = document.querySelector("#importe-calendrier span input[type=file]").files[0];
-        //alert(fichier.name);
-        lecteur = new FileReader();
-        //alert("lecteur=" + lecteur);
-        //lecteur.onload = (function(fichier) { return function(chargement) 
-        lecteur.addEventListener("load", function (evenement) 
-        {
-            console.log("lecteur.onload()");
-            json = this.result;
-            //alert(json);
-            tableauCalendrier = JSON.parse(json);
-            //localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier()));
-            localStorage.setItem("calendrier", JSON.stringify(tableauCalendrier));
-            afficherCalendrier();
-            preparerSauvegardeCalendrier();
-        });
-        lecteur.readAsText(fichier); 
-        //lecteur.readAsDataURL(fichier); 
-        interdireImportDuCalendrier();
-    }
     
-    function importerLesTaches(evenement)
-    {
-        console.log("importerLesTaches(evenement)");
-        if (!verifierTeleversement()) alert('Televersement impossible');
-        //alert(evenement.target.files.length);
-        fichier = evenement.target.files[0];
-        //fichier = document.querySelector("#importe-tache span input[type=file]").files[0];
-        //alert(fichier.name);
-        lecteur = new FileReader();
-        //alert("lecteur=" + lecteur);
-        //lecteur.onload = (function(fichier) { return function(chargement) 
-        lecteur.addEventListener("load", function (evenement) 
-        {
-            console.log("lecteur.onload()");
-            json = this.result;
-            //alert(json);
-            tableauTaches = JSON.parse(json);
-            afficherTableauAvecTaches(tableauTaches);
-            //localStorage.setItem("taches", JSON.stringify(exporterTaches()));
-            localStorage.setItem("taches", JSON.stringify(tableauTaches));
-        });
-        lecteur.readAsText(fichier); 
-        //lecteur.readAsDataURL(fichier); 
-        interdireImportDesTaches();
-    }
-    
-    function permettreImportDuCalendrier()
-    {
-        console.log("permettreImportDuCalendrier()");
-        document.querySelector("#importe-calendrier span").style.display = "block";
-        document.querySelector("#importe-calendrier span input[type=file]").onchange = importerLeCalendrier;
-    }
-    
-    function interdireImportDuCalendrier()
-    {
-        console.log("interdireImportDuCalendrier()");
-        document.querySelector("#importe-calendrier span").style.display = "none";
-        // document.querySelector("#importe-calendrier span input[type=file]")
-    }
-    
-    function permettreImportDesTaches()
-    {
-        console.log("permettreImportDesTaches()");
-        document.querySelector("#importe-tache span").style.display = "block";
-        document.querySelector("#importe-tache span input[type=file]").onchange = importerLesTaches;
-    }
-    
-    function interdireImportDesTaches()
-    {
-        console.log("interdireImportDesTaches()");
-        document.querySelector("#importe-tache span").style.display = "none";
-        // document.querySelector("#importe-tache span input[type=file]")
-    }
-    
-	function sauvegarderTaches()
-	{
-	}
-		
-    function exporterTaches()
-    {
-        var donnees = {};
-        donnees["exercer"] = lireListe("exercer");
-        donnees["etudier"] = lireListe("etudier");
-        donnees["creer"] = lireListe("creer");
-        donnees["construire"] = lireListe("construire");
-        return donnees;
-    }
-    function lireListe(liste)
-    {
-        if(!document.getElementById(liste)) return;
-    
-        var donneesListe = [];
-        lesTachesExercer = document.getElementById(liste).getElementsByTagName("li");
-        for(var position = 0; position < lesTachesExercer.length; position++)
-        {
-            var tache = lesTachesExercer[position];
-            if(tache.className.indexOf("action") == -1) donneesListe[donneesListe.length] = tache.innerHTML;
-        }
-        return donneesListe;
-    }
-    var listeEnEdition = "";
-    
-    function ajouterTache(liste)
-    {
-        var boite = document.querySelector("#formulaire-nouvelle-tache");
-        boite.style.display = "block";
-        boite.style.position = "absolute";
-        //boite.style.x = event.clientX;
-        //boite.style.y = event.clientY;
-		document.getElementById("nouvelle-tache-nom").focus();
-        listeEnEdition = liste;
-    }
-    function enregistrerTaches()
-    {
-        console.log("enregistrerTaches()");
-        var boite = document.querySelector("#formulaire-nouvelle-tache");
-        boite.style.display = "none";
-        lesTaches = JSON.parse(localStorage.getItem("taches"));
-        lesTaches[listeEnEdition.id][lesTaches[listeEnEdition.id].length] = document.querySelector("#nouvelle-tache-nom").value;
-        //alert(lesTaches[listeEnEdition.id]);
-        listeEnEdition.innerHTML = ecrireListe(lesTaches[listeEnEdition.id]);
-        localStorage.setItem("taches", JSON.stringify(lesTaches));
-        preparerSauvegardeTaches();
-        document.querySelector("#nouvelle-tache-nom").value = "";
-        
-        return false;
-    }
-        
-    var actionAjouter = '<li class="action" onClick="ajouterTache(this.parentNode)">+</li>';
-    var tableauTaches;
-    
-    var listeSelonTache = [];
-    function afficherTableauAvecTaches(tableauTaches)
-    {
-        var vueDuTableau = document.querySelector('#taches');
-        vueDuTableau.innerHTML = "";
-        for(nomListe in tableauTaches)
-        {
-            var listeTaches = tableauTaches[nomListe];        
-            vueDuTableau.innerHTML += '<ul id="'+ nomListe+'" class="liste-taches" title="'+nomListe+'">'+ecrireListe(listeTaches) + '</ul>';
-            for(position in listeTaches)
-            {
-                //alert(listeTaches[position]);
-                listeSelonTache[listeTaches[position]] = nomListe;
-            }
-        }
-        //alert(JSON.stringify(listeSelonTache));
-    }
-    
-    function afficherTableauTaches()
-    {
-        var tachesParDefaut = {"exercer":["natation","danse","film"],"etudier":["internet","herboristerie","survie","irlandais"],"creer":["formation","page web","arbre"],"construire":["menage","reno","produit"]};
-        var tachesEnregistrees = JSON.parse(localStorage.getItem("taches"));	
-        tableauTaches = tachesParDefaut;
-        if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
-        {
-            tableauTaches = tachesEnregistrees;
-        }
-        else
-        {
-            localStorage.setItem("taches", JSON.stringify(tachesParDefaut));
-            preparerSauvegardeTaches();
-        }
-        afficherTableauAvecTaches(tableauTaches); 
-    }
-    
+    <script type="text/javascript">
     afficherTableauTaches();
-    
-		
-	var lesQuatresSortes = [document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')];
-
-	
-    var listeCiblesJour = [];
-    var calendrierParDefaut = {};
-    var tableauCalendrier = calendrierParDefaut;
-	function afficherCalendrier(jourCalendrier = new Date())
-	{
-	
-        var calendrierEnregistre = JSON.parse(localStorage.getItem("calendrier"));	
-        if(localStorage.getItem("taches") && localStorage.getItem("taches").length != 0)
-        {
-            tableauCalendrier = calendrierEnregistre;
-        }
-        else
-        {
-            localStorage.setItem("calendrier", JSON.stringify(calendrierParDefaut));
-        }
-        preparerSauvegardeCalendrier();
-        //alert(JSON.stringify(tableauCalendrier));
-
-        var vueCalendrier = document.getElementById("calendrier-jours");
-        vueCalendrier.innerHTML = "";
-        
-        var jour = new Date(JSON.parse(JSON.stringify(jourCalendrier)));
-        for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
-        {
-            var ladate = jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate();
-            etat = verifierEtatDuJour("jour-"+ladate);
-            console.log("Generation - etat = " + etat);
-            //vueCalendrier.innerHTML += '<div class="jour" id="jour-' + ladate + '"><span class="date">' + ladate + '<span><ul class="plan"></ul></div>';
-            var autreJour = document.createElement("div");
-            autreJour.id = 'jour-' + ladate;
-            autreJour.className = 'jour';
-            autreJour.innerHTML = '<span class="date">' + ladate + '<span>';
-            autreJour.onmouseover = function(){suggererCompletion(this)};
-            autreJour.onmouseout = effacerCompletion;
-            var planDeJournee = document.createElement('ul');
-            planDeJournee.className = 'plan ' + etat;
-            //alert(tableauCalendrier['jour-'+ladate]);
-            //alert(tableauCalendrier[ladate].length);
-            if(tableauCalendrier && tableauCalendrier['jour-'+ladate])
-            for(var positionChoix = 0; positionChoix < tableauCalendrier['jour-'+ladate].length; positionChoix++)
-            {
-                console.log(JSON.stringify(descriptionTache));
-                var descriptionTache = tableauCalendrier['jour-'+ladate][positionChoix];
-                if(!descriptionTache['detail']) descriptionTache['detail'] = '';
-                planDeJournee.innerHTML += '<li class="'+listeSelonTache[descriptionTache['nom']]+'"><span class="tache">'+descriptionTache['nom']+'</span><span class="detail" onclick="editerDetailTache(this)">'+descriptionTache['detail']+'</span></li>';
-                //  onclick="appliquerGestures(this)"
-            }
-            
-            autreJour.appendChild(planDeJournee);
-            vueCalendrier.appendChild(autreJour);
-            listeCiblesJour[listeCiblesJour.length] = planDeJournee;
-        }
-    }
-    
     afficherCalendrier();
     
     /*
@@ -753,6 +414,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
     };*/
     
     
+	var lesQuatresSortes = [document.querySelector('#exercer'), document.querySelector('#etudier'), document.querySelector('#creer'), document.querySelector('#construire')];
     var deplacements = picnic(listeCiblesJour.concat(lesQuatresSortes), atterrir);
     picnicHost(document.querySelector("#poubelle-tache"));
     preparerSauvegardeTaches();
