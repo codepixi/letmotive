@@ -38,6 +38,7 @@
 	function quitterUneJournee(obj, plan)
 	{
         console.log("quitterUneJournee()");
+        
 		var objEnDestruction = null;
 		var listeTaches = plan.getElementsByTagName('li');
 		for(var position = 0; position < listeTaches.length; position++)
@@ -47,8 +48,10 @@
 		}
 		if(objEnDestruction) if(tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML]) delete tableauCalendrier[plan.parentNode.id][objEnDestruction.innerHTML];
 		if(plan.contains(objEnDestruction))plan.removeChild(objEnDestruction);
+        
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
         preparerSauvegardeCalendrier();
+        
         console.log("id de la journee a quittee " + plan.parentNode.id);
         etat = verifierEtatDuJour(plan.parentNode.id);
         console.log("la journee est maintenant" + etat);
@@ -62,12 +65,19 @@
 		//alert(JSON.stringify(exporterCalendrier());
 		//var testTache = obj.childNodes[0];
 		//if(testTache.className && testTache.className.indexOf('tache') == 0)
-        var clone = document.createElement('li');
-        clone.className = obj.parentNode.id; // pour la logique des 4 categories par jour
-        //clone.addEventListener('click', function(){appliquerGestures(this)}, false);
-        clone.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetailTache(this)">&nbsp;</span>';
-        picnicJoin(clone);
-        cible.appendChild(clone);
+        //obj.parentNode.removeChild(obj);
+        
+        // Si on arrive d'une liste - et non d'une autre journee
+        if(obj.parentNode.id != "")
+        {
+            var clone = document.createElement('li');
+            obj.className = obj.parentNode.id; // pour la logique des 4 categories par jour
+            //clone.addEventListener('click', function(){appliquerGestures(this)}, false);
+            clone.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetailTache(this)">&nbsp;</span>';
+            picnicJoin(clone);
+            cible.appendChild(clone);
+        }
+        
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
         
         completion = verifierListesObligatoires(cible);
@@ -129,6 +139,7 @@
 		}
 		else if(cible.className.indexOf('plan') != -1)
 		{
+            obj.className = obj.parentNode.id; // pour la logique des 4 categories par jour
 			atterrirDansJournee(obj, cible);
 		}
 		else if(cible.parentNode.className.indexOf('plan') != -1)
