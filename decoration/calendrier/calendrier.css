@@ -80,12 +80,17 @@
 	{
         background-color:green;
 	}
-	#calendrier .jour .plan .detail
+	#calendrier .jour .plan li .detail
 	{
 		width:7rem;
 		display:block;
 		background-color:lightblue;
 	}
+	
+	#calendrier .jour .plan li .tache
+	{
+        color:lightblue;
+    }
 	#calendrier .jour .plan li input
 	{
         width:80px;
