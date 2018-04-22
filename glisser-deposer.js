@@ -66,12 +66,13 @@
 		//var testTache = obj.childNodes[0];
 		//if(testTache.className && testTache.className.indexOf('tache') == 0)
         //obj.parentNode.removeChild(obj);
-        
+
+
         // Si on arrive d'une liste - et non d'une autre journee
         if(obj.parentNode.id != "")
         {
             var clone = document.createElement('li');
-            obj.className = obj.parentNode.id; // pour la logique des 4 categories par jour
+            clone.className = obj.parentNode.id; // pour la logique des 4 categories par jour
             //clone.addEventListener('click', function(){appliquerGestures(this)}, false);
             clone.innerHTML = '<span class="tache">'+obj.innerHTML+'</span><span class="detail" onclick="editerDetailTache(this)">&nbsp;</span>';
             picnicJoin(clone);
