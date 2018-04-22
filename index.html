@@ -426,17 +426,16 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 		{
 			atterrirDansJournee(obj, cible);
 		}
-		//else if(cible.parendNode.className.indexOf('plan') != -1)
-		//{
-		//	atterrirDansJournee(obj, cible.parentNode);
-		//}
-		//else if(cible.className.indexOf('tache') != -1 || cible.className.indexOf('detail') != -1)
-		//{
-            //cible.removeChild(obj);
-            //cible.parentNode.parentNode.appendChild(obj);
-            //obj.parentNode = cible.parentNode.parentNode;
-		//	atterrirDansJournee(obj, cible.parentNode.parentNode);
-		//}
+		else if(cible.parentNode.className.indexOf('plan') != -1)
+		{
+			resterDansListe(obj, origine);
+			atterrirDansJournee(obj, cible.parentNode);
+		}
+		else if(cible.className.indexOf('tache') != -1 || cible.className.indexOf('detail') != -1)
+		{
+			resterDansListe(obj, origine);
+			atterrirDansJournee(obj, cible.parentNode.parentNode);
+		}
 		else
 		{
 			resterDansListe(obj, origine);
