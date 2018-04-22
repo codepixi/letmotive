@@ -52,11 +52,22 @@
 	}
 	#calendrier .jour .plan
 	{
-		background-color:#333333;
 		width:9rem;
 		min-height:20rem;
 		padding-top:0.5rem;
 		padding-bottom:0.5rem;
+	}
+	#calendrier .jour .plan.vide
+	{
+		background-color:white;
+	}
+	#calendrier .jour .plan.incomplet
+	{
+		background-color:#bbbbbb;
+	}
+	#calendrier .jour .plan.complet
+	{
+		background-color:#333333;
 	}
 	#calendrier .jour .plan li
 	{
