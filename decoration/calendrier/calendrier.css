@@ -63,11 +63,10 @@
 	}
 	#calendrier .jour .plan.incomplet
 	{
-		background-color:#bbbbbb;
+		background-color:#333333;
 	}
 	#calendrier .jour .plan.complet
 	{
-		background-color:#333333;
 	}
 	#calendrier .jour .plan li
 	{
