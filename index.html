@@ -362,7 +362,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 	function suggererCompletion(jour)
 	{
         manquantes = verifierListesManquantes(jour);
-        message = "Il vous manque " + JSON.stringify(manquantes);
+        message = (manquantes.length != 0)?"Il vous manque " + JSON.stringify(manquantes) : "&nbsp;";
         console.log(message);
         document.querySelector("#message").innerHTML = message;
 	}
