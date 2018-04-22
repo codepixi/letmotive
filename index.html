@@ -269,7 +269,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         if(completion) cible.className = "plan complet";
         else cible.className = "plan incomplet";
 	}
-	
+	    
 	function verifierListesObligatoires(cible)
 	{
         //verifications = [false,false,false,false];
@@ -277,7 +277,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         {
             listesObligatoires[position] = false;
         }
-        console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
+        //console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
         for(position in cible.childNodes)
         {
             contenu = cible.childNodes[position];
@@ -293,6 +293,40 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         return tous;
 	}
 	
+	function verifierEtatDuJour(jour)
+	{        
+        console.log("verifierEtatDuJour("+jour+")");
+        for(position in listesObligatoires)
+        {
+            listesObligatoires[position] = false;
+        }
+        //console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
+
+        //console.log("calendrier " + localStorage.getItem("calendrier"));
+        calendrier = JSON.parse(localStorage.getItem("calendrier"));
+        for(position in calendrier["jour-"+jour])
+        {
+            tache = calendrier["jour-"+jour][position];
+            //console.log("tache.liste " + tache.liste);
+            if(tache.liste) listesObligatoires[tache.liste] = true;
+        }
+        console.log("Listes obligatoires utilisees : " + JSON.stringify(listesObligatoires));
+        
+        nombre = 0;
+        for(position in listesObligatoires)
+        {
+            if(listesObligatoires[position]) nombre++;
+        }
+        switch(nombre) // dependance sur nombre de categoriees == 4
+        {
+            case 0: return 'vide';
+            case 1: case 2: case 3: return 'incomplet';
+            case 4: return 'complet';
+            
+        }
+
+	}
+
 	function verifierListesManquantes(jour)
 	{
         //alert(jour + jour);
@@ -303,7 +337,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         {
             listesObligatoires[position] = false;
         }
-        console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
+        //console.log("Les listes obligatoires sont " + JSON.stringify(listesObligatoires));
         
         for(position in cible.childNodes)
         {
@@ -319,7 +353,6 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         }
         return manquantes;
 	}
-	
 	
 	function effacerCompletion()
 	{
@@ -399,7 +432,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 		for(var positionJour = 0; positionJour < lesJour.length; positionJour++)
 		{
 			var jour = lesJour[positionJour];
-			var lesChoix = jour.getElementsByClassName('tache');
+			var lesChoix = jour.getElementsByTagName('li');
 	
 			calendrierPlan[jour.id] = [];
 			
@@ -407,8 +440,9 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 			{
 				var choix = lesChoix[positionChoix];
 				var plan = {};
-				plan['nom'] = choix.innerHTML;
-				plan['detail'] = choix.parentNode.getElementsByClassName('detail')[0].innerHTML;
+				plan['nom'] = choix.getElementsByClassName('tache')[0].innerHTML;
+				plan['detail'] = choix.getElementsByClassName('detail')[0].innerHTML;
+				plan['liste'] = choix.className;
 				if(!plan['detail']) plan['detail'] = '';
 				calendrierPlan[jour.id][calendrierPlan[jour.id].length] = plan;
 				//calendrierPlan[jour.id][calendrierPlan[jour.id].length]['detail'] = choix.parentNode.getElementsByClassName('detail')[0].innerHTML;
@@ -654,6 +688,8 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
         {
             var ladate = jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate();
+            etat = verifierEtatDuJour(ladate);
+            console.log("Generation - etat = " + etat);
             //vueCalendrier.innerHTML += '<div class="jour" id="jour-' + ladate + '"><span class="date">' + ladate + '<span><ul class="plan"></ul></div>';
             var autreJour = document.createElement("div");
             autreJour.id = 'jour-' + ladate;
@@ -662,7 +698,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
             autreJour.onmouseover = function(){suggererCompletion(this)};
             autreJour.onmouseout = effacerCompletion;
             var planDeJournee = document.createElement('ul');
-            planDeJournee.className = 'plan';
+            planDeJournee.className = 'plan ' + etat;
             //alert(tableauCalendrier['jour-'+ladate]);
             //alert(tableauCalendrier[ladate].length);
             if(tableauCalendrier && tableauCalendrier['jour-'+ladate])
