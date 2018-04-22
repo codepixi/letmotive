@@ -110,6 +110,8 @@
 		console.log('cible : ' + cible + ':' + cible.id + ':' + cible.className + ' ' + cible.innerHTML);
 		console.log('DRAG & DROP == FIN ==');
 		
+        if(cible == origine) return;
+        
 		if(cible.id == "poubelle-tache" && origine.className.indexOf('liste-taches') != -1)
 		{
             atterrirDansPoubelle(obj);
