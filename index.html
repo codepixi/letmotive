@@ -231,6 +231,10 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 		if(plan.contains(objEnDestruction))plan.removeChild(objEnDestruction);
         localStorage.setItem("calendrier", JSON.stringify(exporterCalendrier())); // TODO optimiser 	
         preparerSauvegardeCalendrier();
+        console.log("id de la journee a quittee " + plan.parentNode.id);
+        etat = verifierEtatDuJour(plan.parentNode.id);
+        console.log("la journee est maintenant" + etat);
+        plan.className = "plan " + etat;
 	}
 	function enregistrerDetailTache(obj)
 	{
@@ -304,9 +308,9 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
 
         //console.log("calendrier " + localStorage.getItem("calendrier"));
         calendrier = JSON.parse(localStorage.getItem("calendrier"));
-        for(position in calendrier["jour-"+jour])
+        for(position in calendrier[jour])
         {
-            tache = calendrier["jour-"+jour][position];
+            tache = calendrier[jour][position];
             //console.log("tache.liste " + tache.liste);
             if(tache.liste) listesObligatoires[tache.liste] = true;
         }
@@ -688,7 +692,7 @@ https://pixabay.com/en/books-pile-orange-close-library-310520/
         for(var jourSemaine = 0; jourSemaine < 7; jourSemaine++, jour.setDate(jour.getDate()+1))
         {
             var ladate = jour.getFullYear() + '-' + (jour.getMonth()+1) + '-' + jour.getDate();
-            etat = verifierEtatDuJour(ladate);
+            etat = verifierEtatDuJour("jour-"+ladate);
             console.log("Generation - etat = " + etat);
             //vueCalendrier.innerHTML += '<div class="jour" id="jour-' + ladate + '"><span class="date">' + ladate + '<span><ul class="plan"></ul></div>';
             var autreJour = document.createElement("div");
